@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create a Project</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --black: #080808;
+            --white: #F8F8F8;
+            --light-gray: #CCCCCC;
+            --dark-gray: #444444;
+            --translucent-white: rgba(255, 255, 255, 0.05);
+            --translucent-black: rgba(0, 0, 0, 0.05);
+            --primary-blue: #4A90E2;
+            --secondary-green: #10b981;
+            --warning-red: #ef4444;
+        }
+
+        .light-theme {
+            --black: #F8F8F8;
+            --white: #080808;
+            --light-gray: #444444;
+            --dark-gray: #CCCCCC;
+            --translucent-white: rgba(0, 0, 0, 0.05);
+            --translucent-black: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--black);
+            color: var(--white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Particles Background */
+        .particles-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .particle {
+            position: absolute;
+            background-color: var(--dark-gray);
+            border-radius: 50%;
+            opacity: 0;
+            animation: move-particle 20s infinite linear;
+        }
+        @keyframes move-particle {
+            0% { transform: translate(var(--x-start), var(--y-start)); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translate(var(--x-end), var(--y-end)); opacity: 0; }
+        }
+
+        /* Reintroduced header section with improved styling */
+        .page-header {
+            width: 100%;
+            max-width: 1200px;
+            padding-top: 50px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .page-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(90deg, #4A90E2, #73B1FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .page-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            font-weight: 400;
+            color: var(--light-gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Main Container for the form */
+        .main-container {
+            width: 100%;
+            max-width: 900px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin-bottom: 50px;
+        }
+
+        /* The main "Frosted Glass" card */
+        .creation-card {
+            width: 100%;
+            background: var(--translucent-white);
+            border: 1px solid var(--dark-gray);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        /* Animated step indicator at the top */
+        .step-tabs-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .step-tab {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 18px;
+            padding: 10px 20px;
+            border-radius: 20px;
+            background: none;
+            border: 2px solid var(--dark-gray);
+            color: var(--light-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .step-tab.active {
+            background: var(--primary-blue);
+            border-color: var(--primary-blue);
+            color: var(--white);
+            transform: scale(1.05);
+        }
+        .step-tab:hover {
+            border-color: var(--white);
+            color: var(--white);
+        }
+
+        /* Dynamic form content */
+        .step-content {
+            min-height: 250px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 25px;
+            padding: 20px;
+            animation: fadeIn 0.8s ease-out;
+        }
+        .step-content.active {
+            display: flex;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .step-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .step-question {
+            font-size: 18px;
+            color: var(--light-gray);
+        }
+        .note {
+            font-style: italic;
+            font-size: 14px;
+            color: var(--dark-gray);
+            margin-top: -10px;
+            margin-bottom: 10px;
+            text-align: left;
+            padding: 0 10px;
+        }
+
+        /* Form elements */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .form-group label {
+            text-align: left;
+            font-weight: 600;
+            color: var(--light-gray);
+            padding-left: 10px;
+        }
+        input, textarea, select {
+            background: var(--translucent-black);
+            border: 1px solid var(--dark-gray);
+            border-radius: 12px;
+            padding: 15px;
+            color: var(--white);
+            font-size: 18px;
+            outline: none;
+            transition: all 0.3s ease;
+            resize: none;
+            text-align: left;
+        }
+        input::placeholder, textarea::placeholder {
+            color: var(--dark-gray);
+            transition: opacity 0.3s ease;
+        }
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.4);
+        }
+        input:focus::placeholder, textarea:focus::placeholder {
+            opacity: 0;
+        }
+        
+        /* NEW STYLING FOR ROLES SECTION */
+        .roles-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .role-input-group {
+            background: var(--translucent-black);
+            border: 1px solid var(--dark-gray);
+            border-radius: 12px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .role-input-group:hover {
+            border-color: var(--primary-blue);
+        }
+        .role-input-group .role-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+        .role-input-group .role-name {
+            flex-grow: 1;
+            font-weight: 500;
+            background: transparent;
+            border: none;
+            padding: 5px 0;
+        }
+        .role-input-group .role-count {
+            width: 60px;
+            text-align: center;
+            border: 1px solid var(--dark-gray);
+            border-radius: 8px;
+            padding: 8px 5px;
+        }
+        .role-input-group .remove-role-btn {
+            background: none;
+            border: none;
+            color: var(--warning-red);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+            transition: transform 0.2s ease-in-out;
+        }
+        .role-input-group .remove-role-btn:hover {
+            transform: scale(1.2);
+        }
+        .role-input-group .role-skills-input {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--dark-gray);
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .role-input-group .role-skills-input:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 5px rgba(74, 144, 226, 0.4);
+        }
+        .add-role-btn {
+            background: var(--secondary-green);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+        .add-role-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Project Visibility Toggle */
+        .visibility-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .visibility-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .visibility-option:hover {
+            transform: translateY(-5px);
+        }
+        .visibility-option input[type="radio"] {
+            display: none;
+        }
+        .visibility-option .icon {
+            font-size: 40px;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--translucent-black);
+            border: 2px solid var(--dark-gray);
+            transition: all 0.3s ease;
+        }
+        .visibility-option input[type="radio"]:checked + .icon {
+            background: var(--primary-blue);
+            border-color: var(--primary-blue);
+            color: var(--white);
+            box-shadow: 0 0 15px var(--primary-blue);
+        }
+        .visibility-option .label {
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--light-gray);
+        }
+
+        /* Buttons */
+        .form-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            width: 100%;
+        }
+        .form-actions button {
+            background: var(--primary-blue);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .form-actions button:hover {
+            background: #3A7AB9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .form-actions button.secondary {
+            background: transparent;
+            border: 1px solid var(--dark-gray);
+            color: var(--light-gray);
+        }
+        .form-actions button.secondary:hover {
+            background: var(--translucent-black);
+        }
+
+        /* Footer */
+        .footer {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--dark-gray);
+            padding: 60px 20px 20px;
+            margin-top: auto;
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        .footer-section h3 {
+            color: var(--white);
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .footer-section ul {
+            list-style: none;
+        }
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+        .footer-section ul li a {
+            color: var(--light-gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer-section ul li a:hover {
+            color: var(--white);
+        }
+        .footer-bottom {
+            border-top: 1px solid var(--dark-gray);
+            padding-top: 20px;
+            text-align: center;
+            color: var(--dark-gray);
+        }
+
+        /* Mobile responsive adjustments */
+        @media (max-width: 768px) {
+            .page-header {
+                padding-top: 20px;
+                margin-bottom: 20px;
+            }
+            .page-title {
+                font-size: 36px;
+            }
+            .main-container {
+                padding-top: 0;
+            }
+            .creation-card {
+                padding: 20px;
+            }
+            .step-title {
+                font-size: 24px;
+            }
+            .step-tab {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+            .step-tabs-container {
+                gap: 8px;
+            }
+            .step-question {
+                font-size: 16px;
+            }
+            .form-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .form-actions button {
+                padding: 12px;
+                font-size: 16px;
+            }
+            .role-input-group {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 15px;
+            }
+            .role-input-group input {
+                text-align: left;
+            }
+            .role-input-group .role-count {
+                width: 100%;
+                text-align: left;
+                margin-top: 10px;
+            }
+            .visibility-toggle {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body class="light-theme">
+
+    <div class="particles-bg"></div>
+
+    <div class="page-header">
+        <h1 class="page-title">Initiate a New Project</h1>
+        <p class="page-subtitle">Define your project's scope, assemble your team, and specify the skills required for success.</p>
+    </div>
+    
+    <div class="main-container">
+        <div class="creation-card">
+            
+            <div class="step-tabs-container" id="stepTabs">
+                <div class="step-tab active" data-step="1">Details</div>
+                <div class="step-tab" data-step="2">Category</div>
+                <div class="step-tab" data-step="3">Your Role</div>
+                <div class="step-tab" data-step="4">Team & Skills</div>
+                <div class="step-tab" data-step="5">Brief</div>
+                <div class="step-tab" data-step="6">Visibility</div>
+            </div>
+
+            <form id="multiStepForm">
+                <div id="step1" class="step-content active">
+                    <h2 class="step-title">Project Details</h2>
+                    <p class="step-question">Provide a name and a general description for your project.</p>
+                    <div class="form-group">
+                        <label for="projectName">Project Title</label>
+                        <input type="text" id="projectName" name="projectName" placeholder="e.g., Campus Connect App" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectDescription">Project Description</label>
+                        <textarea id="projectDescription" name="projectDescription" rows="4" placeholder="Briefly describe the purpose and objectives of this project..." required></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" onclick="nextStep(1)">Next Step</button>
+                    </div>
+                </div>
+
+                <div id="step2" class="step-content">
+                    <h2 class="step-title">Project Category</h2>
+                    <p class="step-question">Choose the main domain that best fits your project.</p>
+                    <div class="form-group">
+                        <label for="projectCategory">Category</label>
+                        <select id="projectCategory" name="projectCategory" required>
+                            <option value="" disabled selected>Select a category</option>
+                            <option value="web_development">Web Development</option>
+                            <option value="mobile_app">Mobile App</option>
+                            <option value="ai_ml">AI/Machine Learning</option>
+                            <option value="game_design">Game Design</option>
+                            <option value="ui_ux">UI/UX</option>
+                            <option value="data_science">Data Science</option>
+                            <option value="cybersecurity">Cybersecurity</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="secondary" onclick="prevStep(2)">Back</button>
+                        <button type="button" onclick="nextStep(2)">Next Step</button>
+                    </div>
+                </div>
+
+                <div id="step3" class="step-content">
+                    <h2 class="step-title">Your Role</h2>
+                    <p class="step-question">What role will you be taking on this project?</p>
+                    <div class="form-group">
+                        <label for="creatorRole">My Role</label>
+                        <input type="text" id="creatorRole" name="creatorRole" placeholder="e.g., Project Lead, Founder">
+                        <p class="note">Leave blank to be automatically assigned as Project Leader.</p>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="secondary" onclick="prevStep(3)">Back</button>
+                        <button type="button" onclick="nextStep(3)">Next Step</button>
+                    </div>
+                </div>
+
+                <div id="step4" class="step-content">
+                    <h2 class="step-title">Team & Skills</h2>
+                    <p class="step-question">Define the roles and skills required for your team.</p>
+                    <div class="form-group">
+                        <label>Team Roles</label>
+                        <div class="roles-container" id="roles-container">
+                        </div>
+                        <button type="button" class="add-role-btn">Add Another Role</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Minimum Experience Level</label>
+                        <select id="requiredLevel" name="requiredLevel" required>
+                            <option value="" disabled selected>Select a level</option>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="expert">Expert</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="secondary" onclick="prevStep(4)">Back</button>
+                        <button type="button" onclick="nextStep(4)">Next Step</button>
+                    </div>
+                </div>
+
+                <div id="step5" class="step-content">
+                    <h2 class="step-title">Detailed Project Brief</h2>
+                    <p class="step-question">Provide a comprehensive brief for your team. This will be visible to approved members only.</p>
+                    <div class="form-group">
+                        <label for="detailedBrief">Detailed Brief</label>
+                        <textarea id="detailedBrief" name="detailedBrief" rows="8" placeholder="Outline the project's features, technical architecture, and a detailed plan for execution..."></textarea>
+                        <p class="note">This description will only be readable by the approved members of your team.</p>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="secondary" onclick="prevStep(5)">Back</button>
+                        <button type="button" onclick="nextStep(5)">Next Step</button>
+                    </div>
+                </div>
+
+                <div id="step6" class="step-content">
+                    <h2 class="step-title">Project Visibility</h2>
+                    <p class="step-question">How visible do you want your project to be?</p>
+                    <div class="form-group">
+                        <div class="visibility-toggle">
+                            <label class="visibility-option">
+                                <input type="radio" name="projectVisibility" value="public" checked>
+                                <span class="icon"><i class="fas fa-globe"></i></span>
+                                <span class="label">Public</span>
+                            </label>
+                            <label class="visibility-option">
+                                <input type="radio" name="projectVisibility" value="private">
+                                <span class="icon"><i class="fas fa-lock"></i></span>
+                                <span class="label">Private</span>
+                            </label>
+                        </div>
+                        <p class="note">The project will be public to all after completion. This can also be changed in the settings later.</p>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="secondary" onclick="prevStep(6)">Back</button>
+                        <button type="submit" id="submitBtn">Create Project</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3>Platform</h3>
+                    <ul>
+                        <li><a href="#explore">Explore Quests</a></li>
+                        <li><a href="#skills">Find Skills</a></li>
+                        <li><a href="#teams">Join Guilds</a></li>
+                        <li><a href="#resources">Resources</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Community</h3>
+                    <ul>
+                        <li><a href="#guidelines">Community Guidelines</a></li>
+                        <li><a href="#events">Events</a></li>
+                        <li><a href="#blog">Blog</a></li>
+                        <li><a href="#success">Success Stories</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#help">Help Center</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
+                        <li><a href="#feedback">Feedback</a></li>
+                        <li><a href="#status">System Status</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#about">About Talio</a></li>
+                        <li><a href="#careers">Careers</a></li>
+                        <li><a href="#press">Press Kit</a></li>
+                        <li><a href="#partners">Partners</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Talio. All rights reserved. Built with ❤️ for players, by players.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 6;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userEmail = urlParams.get('email');
+            
+            if (!userEmail) {
+                window.location.href = '/home/authentication/login.html';
+                return;
+            }
+
+            showStep(currentStep);
+            createParticles();
+
+            addInitialRole();
+            
+            const rolesContainer = document.getElementById('roles-container');
+            document.querySelector('.add-role-btn').addEventListener('click', () => {
+                addRole();
+            });
+
+            rolesContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('remove-role-btn')) {
+                    if (rolesContainer.children.length > 1) {
+                        e.target.closest('.role-input-group').remove();
+                    } else {
+                        alert("You must have at least one role.");
+                    }
+                }
+            });
+
+            document.getElementById('multiStepForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                if (!validateStep(6)) {
+                    return;
+                }
+
+                const projectName = document.getElementById('projectName').value;
+                const projectDescription = document.getElementById('projectDescription').value;
+                const projectCategory = document.getElementById('projectCategory').value;
+                const creatorRole = document.getElementById('creatorRole').value || 'Project Leader';
+                const requiredLevel = document.getElementById('requiredLevel').value;
+                const detailedBrief = document.getElementById('detailedBrief').value;
+                const projectVisibility = document.querySelector('input[name="projectVisibility"]:checked').value;
+                
+                const roles = [];
+                document.querySelectorAll('.role-input-group').forEach(roleDiv => {
+                    const roleName = roleDiv.querySelector('.role-name').value;
+                    const roleCount = roleDiv.querySelector('.role-count').value;
+                    const roleSkills = roleDiv.querySelector('.role-skills-input').value.split(',').map(s => s.trim()).filter(s => s);
+                    if (roleName && roleCount) {
+                        roles.push({ name: roleName, count: parseInt(roleCount), skills: roleSkills });
+                    }
+                });
+                
+                const totalMembers = roles.reduce((sum, role) => sum + role.count, 0) + 1;
+                const members = [{ email: userEmail, role: creatorRole }];
+                
+                const postData = {
+                    projectName,
+                    projectDescription,
+                    projectCategory,
+                    creatorRole,
+                    totalMembers,
+                    requiredLevel,
+                    roles,
+                    detailedBrief,
+                    projectVisibility,
+                    members
+                };
+                
+                try {
+                    const token = localStorage.getItem('token');
+                    const response = await fetch('/api/teams/create', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(postData)
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        alert(result.message);
+                        window.location.href = `projectwork.html?email=${encodeURIComponent(userEmail)}`;
+                    } else {
+                        const error = await response.json();
+                        alert(`Error: ${error.message}`);
+                    }
+                } catch (error) {
+                    console.error('Error creating project:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            });
+
+            document.querySelectorAll('.step-tab').forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    const step = parseInt(e.target.getAttribute('data-step'));
+                    if (step <= currentStep) {
+                        showStep(step);
+                        currentStep = step;
+                    }
+                });
+            });
+        });
+
+        function addInitialRole() {
+            const rolesContainer = document.getElementById('roles-container');
+            const newRoleInput = document.createElement('div');
+            newRoleInput.className = 'role-input-group';
+            newRoleInput.innerHTML = `
+                <div class="role-header">
+                    <input type="text" placeholder="Role (e.g., UI/UX Designer)" class="role-name" required>
+                    <input type="number" placeholder="Count" min="1" class="role-count" required>
+                    <button type="button" class="remove-role-btn">✖</button>
+                </div>
+                <input type="text" placeholder="Required skills (e.g., Figma, Sketch, Prototyping)" class="role-skills-input">
+            `;
+            rolesContainer.appendChild(newRoleInput);
+        }
+
+        function addRole() {
+            const rolesContainer = document.getElementById('roles-container');
+            const newRoleInput = document.createElement('div');
+            newRoleInput.className = 'role-input-group';
+            newRoleInput.innerHTML = `
+                <div class="role-header">
+                    <input type="text" placeholder="Role (e.g., Front-end Developer)" class="role-name" required>
+                    <input type="number" placeholder="Count" min="1" class="role-count" required>
+                    <button type="button" class="remove-role-btn">✖</button>
+                </div>
+                <input type="text" placeholder="Required skills (e.g., React, JavaScript, CSS)" class="role-skills-input">
+            `;
+            rolesContainer.appendChild(newRoleInput);
+        }
+
+        function showStep(step) {
+            const steps = document.querySelectorAll('.step-content');
+            const stepTabs = document.querySelectorAll('.step-tab');
+            
+            steps.forEach(s => s.classList.remove('active'));
+            stepTabs.forEach(t => t.classList.remove('active'));
+
+            document.getElementById(`step${step}`).classList.add('active');
+            document.querySelector(`.step-tab[data-step="${step}"]`).classList.add('active');
+        }
+
+        function validateStep(step) {
+            let isValid = true;
+            const currentForm = document.getElementById(`step${step}`);
+            const inputs = currentForm.querySelectorAll('input[required], select[required], textarea[required]');
+            
+            inputs.forEach(input => {
+                if (!input.checkValidity()) {
+                    isValid = false;
+                    input.reportValidity();
+                }
+            });
+            
+            if (step === 4) {
+                const roles = document.querySelectorAll('.role-input-group');
+                if (roles.length === 0) {
+                    isValid = false;
+                    alert("Please add at least one role.");
+                }
+            }
+
+            return isValid;
+        }
+
+        function nextStep(step) {
+            if (!validateStep(step)) {
+                return;
+            }
+            currentStep = step + 1;
+            showStep(currentStep);
+        }
+
+        function prevStep(step) {
+            currentStep = step - 1;
+            showStep(currentStep);
+        }
+
+        function createParticles() {
+            const particlesContainer = document.querySelector('.particles-bg');
+            const numParticles = 80;
+            for (let i = 0; i < numParticles; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 2 + 1;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.setProperty('--x-start', `${Math.random() * 100}%`);
+                particle.style.setProperty('--y-start', `${Math.random() * 100}%`);
+                particle.style.setProperty('--x-end', `${(Math.random() - 0.5) * 200}px`);
+                particle.style.setProperty('--y-end', `${(Math.random() - 0.5) * 200}px`);
+                particle.style.animationDuration = `${Math.random() * 15 + 15}s`;
+                particle.style.animationDelay = `-${Math.random() * 15}s`;
+                particlesContainer.appendChild(particle);
+            }
+        }
+    </script>
+</body>
+</html>

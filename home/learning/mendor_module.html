@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentor Dashboard - Talio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #080808;
+            --white: #F8F8F8;
+            --light-gray: #CCCCCC;
+            --dark-gray: #444444;
+            --translucent-white: rgba(255, 255, 255, 0.05);
+            --translucent-black: rgba(0, 0, 0, 0.05);
+            --primary-accent: #6c63ff;
+        }
+
+        .light-theme {
+            --black: #F8F8F8;
+            --white: #080808;
+            --light-gray: #444444;
+            --dark-gray: #CCCCCC;
+            --translucent-white: rgba(0, 0, 0, 0.05);
+            --translucent-black: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--black);
+            color: var(--white);
+            padding-top: 100px;
+        }
+        
+        .nav-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 95%;
+            max-width: 1200px;
+        }
+
+        .nav {
+            background: var(--translucent-black);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--dark-gray);
+            border-radius: 50px;
+            padding: 10px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
+        }
+        
+        .profile-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--dark-gray);
+            cursor: pointer;
+        }
+
+        .dashboard-container, .editor-container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            color: var(--white);
+        }
+
+        .add-module-btn {
+            background-color: var(--primary-accent);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .add-module-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .module {
+            background: var(--translucent-black);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--dark-gray);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            padding: 20px;
+            cursor: pointer;
+        }
+
+        .module-header {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 15px;
+        }
+
+        .chapter-list {
+            list-style: none;
+        }
+
+        .chapter-item {
+            background: var(--translucent-white);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            color: var(--light-gray);
+            transition: background-color 0.3s;
+        }
+        
+        .chapter-item:hover {
+            background-color: var(--translucent-black);
+        }
+
+        /* Editor Styles */
+        .editor-container {
+            display: none; /* Hidden by default */
+        }
+
+        .module-title-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid var(--dark-gray);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            color: var(--white);
+            padding: 10px 0;
+            margin-bottom: 30px;
+            outline: none;
+        }
+        
+        .chapter {
+            background: var(--translucent-black);
+            border: 1px solid var(--dark-gray);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .chapter-title-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            color: var(--white);
+            margin-bottom: 15px;
+            outline: none;
+        }
+        
+        .upload-area {
+            background: var(--translucent-white);
+            border: 2px dashed var(--dark-gray);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+        
+        .questions-area {
+            width: 100%;
+            min-height: 100px;
+            background: var(--translucent-white);
+            border: 1px solid var(--dark-gray);
+            border-radius: 10px;
+            padding: 10px;
+            color: var(--white);
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .add-chapter-btn, .back-btn {
+            background-color: var(--dark-gray);
+            color: var(--white);
+        }
+        
+        .save-module-btn {
+            background-color: var(--primary-accent);
+            color: #fff;
+        }
+
+    </style>
+</head>
+<body class="light-theme">
+
+    <div class="nav-container">
+        <nav class="nav">
+            <div class="logo">TeamR</div>
+            <div class="profile-icon"></div>
+        </nav>
+    </div>
+
+    <!-- Dashboard View -->
+    <div class="dashboard-container" id="dashboard-view">
+        <div class="header">
+            <h1>Modules</h1>
+            <a href="#" class="add-module-btn" id="addModuleBtn">+</a>
+        </div>
+        <div id="modules-container"></div>
+    </div>
+
+    <!-- Editor View -->
+    <div class="editor-container" id="editor-view">
+        <input type="text" id="moduleTitleInput" class="module-title-input" placeholder="Enter Module Title...">
+
+        <div id="chapters-container">
+            <!-- Chapters will be dynamically added here -->
+        </div>
+
+        <div class="action-buttons">
+            <div>
+                <button class="btn back-btn" id="backBtn">Back to Dashboard</button>
+                <button class="btn add-chapter-btn" id="addChapterBtn">Add Chapter</button>
+            </div>
+            <button class="btn post-module-btn" style="background-color: var(--primary-accent); color: #fff; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                Post Module
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dashboardView = document.getElementById('dashboard-view');
+            const editorView = document.getElementById('editor-view');
+            const addModuleBtn = document.getElementById('addModuleBtn');
+            const modulesContainer = document.getElementById('modules-container');
+            const moduleTitleInput = document.getElementById('moduleTitleInput');
+            const chaptersContainer = document.getElementById('chapters-container');
+            const addChapterBtn = document.getElementById('addChapterBtn');
+            const backBtn = document.getElementById('backBtn');
+
+            let chapterCount = 0;
+
+            function showDashboard() {
+                dashboardView.style.display = 'block';
+                editorView.style.display = 'none';
+            }
+
+            function showEditor(moduleTitle = '', chapters = []) {
+                dashboardView.style.display = 'none';
+                editorView.style.display = 'block';
+                
+                moduleTitleInput.value = moduleTitle;
+                chaptersContainer.innerHTML = '';
+                chapterCount = 0;
+
+                if (chapters.length > 0) {
+                    chapters.forEach(chapterTitle => addChapter(chapterTitle));
+                } else {
+                    addChapter(); // Add one empty chapter for new modules
+                }
+            }
+
+            function addChapter(title = '', videoUrl = '') {
+                chapterCount++;
+                const newChapter = document.createElement('div');
+                newChapter.classList.add('chapter');
+                    newChapter.innerHTML = `
+                        <input type="text" class="chapter-title-input" placeholder="Enter Chapter ${chapterCount} Title..." value="${title}">
+                        <div class="upload-area">
+                            <p>Upload Video</p>
+                            <input type="file" style="display:block;" accept="video/*">
+                            <span class="upload-status" style="display:none;color:var(--primary-accent);font-weight:600;">Uploading...</span>
+                            <video src="${videoUrl}" controls style="width:100%;margin-top:10px;display:${videoUrl ? 'block' : 'none'}"></video>
+                        </div>
+                    `;
+                chaptersContainer.appendChild(newChapter);
+                // Video upload handler
+                const fileInput = newChapter.querySelector('input[type="file"]');
+                const videoEl = newChapter.querySelector('video');
+                    const uploadStatus = newChapter.querySelector('.upload-status');
+                fileInput.addEventListener('change', async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const formData = new FormData();
+                    formData.append('media', file);
+                    const token = localStorage.getItem('token') || '';
+                        uploadStatus.style.display = 'inline';
+                        fileInput.disabled = true;
+                    const response = await fetch('/api/module/upload-video', {
+                        method: 'POST',
+                        headers: token ? { 'Authorization': 'Bearer ' + token } : {},
+                        body: formData
+                    });
+                    const data = await response.json();
+                        uploadStatus.style.display = 'none';
+                        fileInput.disabled = false;
+                    if (response.ok && data.url) {
+                        videoEl.src = data.url;
+                        videoEl.style.display = 'block';
+                        alert('Video uploaded!');
+                    } else {
+                        alert('Video upload failed: ' + (data.message || 'Unknown error'));
+                    }
+                });
+            }
+
+            // Event listener for the "+" button to add a new module
+            addModuleBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                showEditor();
+            });
+
+            // Event listeners for existing modules
+            modulesContainer.addEventListener('click', (e) => {
+                const moduleElement = e.target.closest('.module');
+                if (moduleElement) {
+                    const title = moduleElement.dataset.moduleTitle;
+                    const chapterElements = moduleElement.querySelectorAll('.chapter-item');
+                    const chapters = Array.from(chapterElements).map(el => el.dataset.chapterTitle);
+                    showEditor(title, chapters);
+                }
+            });
+
+            // Event listener for the "Add Chapter" button in the editor
+            addChapterBtn.addEventListener('click', () => addChapter());
+
+            // Event listener for the "Back" button
+            backBtn.addEventListener('click', showDashboard);
+
+            // On save, collect all chapter titles and video URLs and send to backend
+            const postModuleBtn = document.querySelector('.post-module-btn');
+            postModuleBtn.addEventListener('click', async () => {
+                const moduleTitle = moduleTitleInput.value;
+                const chapters = Array.from(chaptersContainer.querySelectorAll('.chapter')).map(chap => {
+                    return {
+                        title: chap.querySelector('.chapter-title-input').value,
+                        video: chap.querySelector('video').src
+                    };
+                });
+                const token = localStorage.getItem('token') || '';
+                postModuleBtn.disabled = true;
+                postModuleBtn.textContent = 'Posting...';
+                const response = await fetch('/api/module/save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(token ? { 'Authorization': 'Bearer ' + token } : {})
+                    },
+                    body: JSON.stringify({ moduleTitle, chapters })
+                });
+                const data = await response.json();
+                postModuleBtn.disabled = false;
+                postModuleBtn.textContent = 'Post Module';
+                if (response.ok) {
+                    alert('Module posted!');
+                    showDashboard();
+                } else {
+                    alert('Error posting module: ' + (data.message || 'Unknown error'));
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

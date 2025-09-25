@@ -1,0 +1,494 @@
+0<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Posts - Talio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Base Styles and Themes (from reference files) --- */
+        :root {
+            --black: #080808;
+            --white: #F8F8F8;
+            --light-gray: #CCCCCC;
+            --dark-gray: #444444;
+            --translucent-white: rgba(255, 255, 255, 0.05);
+            --translucent-black: rgba(0, 0, 0, 0.05);
+            --primary-accent: #6c63ff;
+            --success-green: #10b981;
+            --warning-yellow: #f59e0b;
+        }
+
+        .light-theme {
+            --black: #F8F8F8;
+            --white: #080808;
+            --light-gray: #444444;
+            --dark-gray: #CCCCCC;
+            --translucent-white: rgba(0, 0, 0, 0.05);
+            --translucent-black: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--black);
+            color: var(--white);
+            overflow-x: hidden;
+            position: relative;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* --- Particles Background (from reference files) --- */
+        .particles-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background-color: var(--dark-gray);
+            border-radius: 50%;
+            opacity: 0;
+            animation: move-particle 20s infinite linear;
+        }
+
+        @keyframes move-particle {
+            0% { transform: translate(var(--x-start), var(--y-start)); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translate(var(--x-end), var(--y-end)); opacity: 0; }
+        }
+
+        /* --- Navigation (from reference files) --- */
+        .nav-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 95%;
+            max-width: 1200px;
+        }
+
+        .nav {
+            background: var(--translucent-black);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--dark-gray);
+            border-radius: 50px;
+            padding: 10px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--light-gray);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .sign-up-btn {
+            background: var(--white);
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            color: var(--black);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .profile-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--dark-gray);
+            border: 2px solid var(--dark-gray);
+            cursor: pointer;
+        }
+
+        /* --- Main Content for User Post Page --- */
+        .post-container {
+            padding: 120px 20px 50px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* --- Create Post Section --- */
+        .create-post-card {
+            background: var(--translucent-black);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--dark-gray);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 40px;
+        }
+
+        .post-textarea {
+            width: 100%;
+            min-height: 120px;
+            background: var(--translucent-white);
+            border: 1px solid var(--dark-gray);
+            border-radius: 15px;
+            padding: 15px;
+            color: var(--white);
+            font-size: 1rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        
+        .post-textarea:focus {
+            border-color: var(--primary-accent);
+        }
+        
+        .image-preview-container {
+            margin-top: 15px;
+            display: none; /* Hidden by default */
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 10px;
+            border: 1px solid var(--dark-gray);
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .action-buttons .upload-label {
+            background: transparent;
+            border: 1px solid var(--dark-gray);
+            color: var(--light-gray);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .action-buttons .upload-label:hover {
+            border-color: var(--white);
+            color: var(--white);
+        }
+        
+        .submit-buttons button {
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .save-draft-btn {
+            background-color: var(--dark-gray);
+            color: var(--white);
+        }
+        
+        .post-btn {
+            background-color: var(--primary-accent);
+            color: #fff;
+            margin-left: 10px;
+        }
+        
+        .post-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* --- Footer (from reference files) --- */
+        .footer {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--dark-gray);
+            padding: 60px 20px 20px;
+            margin-top: 100px;
+        }
+
+        .footer-content { max-width: 1200px; margin: 0 auto; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 40px; }
+        .footer-section h3 { color: var(--white); font-weight: 600; margin-bottom: 20px; font-family: 'Montserrat', sans-serif; }
+        .footer-section ul { list-style: none; }
+        .footer-section ul li { margin-bottom: 10px; }
+        .footer-section ul li a { color: var(--light-gray); text-decoration: none; }
+        .footer-bottom { border-top: 1px solid var(--dark-gray); padding-top: 20px; text-align: center; color: var(--dark-gray); }
+        
+        /* --- Responsive --- */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .page-title { font-size: 2rem; }
+            .post-actions { flex-direction: column; align-items: stretch; }
+            .submit-buttons { display: flex; justify-content: flex-end; width: 100%; }
+        }
+
+    </style>
+</head>
+<body class="light-theme">
+    <div class="particles-bg"></div>
+
+    <div class="nav-container">
+        <nav class="nav">
+            <div class="logo">Talio</div>
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Explore</a></li>
+                <li><a href="#">Learn</a></li>
+                <li><a href="#">Profile</a></li>
+            </ul>
+            <div class="nav-right">
+                <button class="sign-up-btn">Sign Up</button>
+                <div class="profile-icon"></div>
+            </div>
+        </nav>
+    </div>
+
+    <main class="post-container">
+        <h1 class="page-title">Create a Post</h1>
+
+        <section class="create-post-card">
+            <textarea id="postTextarea" class="post-textarea" placeholder="Share your thoughts, progress, or start a new draft..."></textarea>
+            
+            <div id="imagePreviewContainer" class="image-preview-container">
+                <img id="imagePreview" src="" alt="Image Preview" class="image-preview">
+            </div>
+
+            <div class="post-actions">
+                <div class="action-buttons">
+                    <input type="file" id="imageUpload" accept="image/*" multiple style="display: none;">
+                    <label for="imageUpload" class="upload-label">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                    </label>
+                </div>
+                <div class="submit-buttons">
+                    <button class="save-draft-btn">Save Draft</button>
+                    <button class="post-btn">Post</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-grid">
+                 <div class="footer-section">
+                    <h3>Platform</h3>
+                    <ul>
+                        <li><a href="#">Explore Quests</a></li>
+                        <li><a href="#">Find Skills</a></li>
+                        <li><a href="#">Join Guilds</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Community</h3>
+                    <ul>
+                        <li><a href="#">Guidelines</a></li>
+                        <li><a href="#">Events</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#">About TeamR</a></li>
+                        <li><a href="#">Careers</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 TeamR. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+<script>
+    // --- Particle Background Animation ---
+    function createParticles() {
+        const particlesContainer = document.querySelector('.particles-bg');
+        if (!particlesContainer) return;
+        for (let i = 0; i < 80; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            const size = Math.random() * 2 + 1;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.setProperty('--x-start', `${Math.random() * 100}vw`);
+            particle.style.setProperty('--y-start', `${Math.random() * 100}vh`);
+            particle.style.setProperty('--x-end', `${Math.random() * 100}vw`);
+            particle.style.setProperty('--y-end', `${Math.random() * 100}vh`);
+            particle.style.animationDuration = `${Math.random() * 15 + 20}s`;
+            particle.style.animationDelay = `-${Math.random() * 20}s`;
+            particlesContainer.appendChild(particle);
+        }
+    }
+    
+    // --- Post Creation Functionality ---
+    function setupPostCreation() {
+        const imageUpload = document.getElementById('imageUpload');
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        const postBtn = document.querySelector('.post-btn');
+        let uploadedImageUrls = [];
+        let uploadedVideoUrl = '';
+
+        if (!imageUpload) return;
+
+        // Handle image/video selection and preview
+        imageUpload.addEventListener('change', async (event) => {
+            const files = Array.from(event.target.files);
+            uploadedImageUrls = [];
+            imagePreviewContainer.innerHTML = '';
+            for (const file of files) {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'image-preview';
+                        imagePreviewContainer.appendChild(img);
+                        imagePreviewContainer.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else if (file.type.startsWith('video/')) {
+                    imagePreviewContainer.style.display = 'none';
+                    alert('Video preview is not supported.');
+                }
+                postBtn.disabled = true;
+                postBtn.textContent = 'Uploading...';
+                const formData = new FormData();
+                formData.append('media', file);
+                const token = localStorage.getItem('token') || getCookie('token');
+                try {
+                    const response = await fetch('/api/post/upload-media', {
+                        method: 'POST',
+                        headers: token ? { 'Authorization': 'Bearer ' + token } : {},
+                        body: formData
+                    });
+                    const data = await response.json();
+                    if (response.ok && data.url) {
+                        if (file.type.startsWith('image/')) {
+                            uploadedImageUrls.push(data.url);
+                        } else if (file.type.startsWith('video/')) {
+                            uploadedVideoUrl = data.url;
+                        }
+                    } else {
+                        alert('Media upload failed: ' + (data.message || 'Unknown error'));
+                    }
+                } catch (error) {
+                    console.error('Error during media upload:', error);
+                    alert('Error uploading media. Please check your network.');
+                } finally {
+                    postBtn.disabled = false;
+                    postBtn.textContent = 'Post';
+                }
+            }
+        });
+
+        postBtn.addEventListener('click', async () => {
+            const content = document.getElementById('postTextarea').value;
+            if (!content && uploadedImageUrls.length === 0 && !uploadedVideoUrl) {
+                alert('Please add content or an image/video to your post.');
+                return;
+            }
+            const token = localStorage.getItem('token') || getCookie('token');
+            console.log('Submitting post with images:', uploadedImageUrls, 'video_url:', uploadedVideoUrl);
+            const response = await fetch('/api/post/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
+                },
+                body: JSON.stringify({ content, images: uploadedImageUrls, video_url: uploadedVideoUrl })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                window.history.back();
+            } else {
+                alert('Error submitting post: ' + data.message);
+            }
+        });
+
+        document.querySelector('.save-draft-btn').addEventListener('click', () => {
+            alert('Draft saved! (Functionality not implemented)');
+        });
+    }
+
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    // --- Run scripts on page load ---
+    document.addEventListener('DOMContentLoaded', () => {
+        createParticles();
+        setupPostCreation();
+    });
+</script>
+</body>
+</html>

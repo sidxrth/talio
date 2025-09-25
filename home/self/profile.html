@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Profile - Talio</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --black: #080808;
+    --white: #F8F8F8;
+    --light-gray: #CCCCCC;
+    --dark-gray: #444444;
+    --translucent-white: rgba(255,255,255,0.05);
+    --translucent-black: rgba(0,0,0,0.05);
+    --primary-accent: #6c63ff;
+}
+.light-theme {
+    --black: #F8F8F8;
+    --white: #080808;
+    --light-gray: #444444;
+    --dark-gray: #CCCCCC;
+    --translucent-white: rgba(0,0,0,0.05);
+    --translucent-black: rgba(255,255,255,0.05);
+    --primary-accent: #6c63ff;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--black);
+    color: var(--white);
+    overflow-x:hidden;
+    transition: background-color 0.5s, color 0.5s;
+}
+.nav-container { position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:1000; width:95%; max-width:1200px; }
+.nav {
+    background: var(--translucent-black);
+    backdrop-filter: blur(10px);
+    border:1px solid var(--dark-gray);
+    border-radius:50px;
+    padding:10px 30px;
+    display:flex; align-items:center; justify-content:space-between;
+}
+.nav:hover { box-shadow:0 0 15px rgba(255,255,255,0.1); }
+.logo { font-family:'Montserrat', sans-serif; font-size:24px; font-weight:700; color:var(--white); }
+.nav-links { display:flex; gap:30px; list-style:none; }
+.nav-links a { color:var(--light-gray); text-decoration:none; font-weight:500; font-size:15px; }
+.nav-links a:hover { color:var(--white); }
+.nav-right { display:flex; align-items:center; gap:20px; }
+.search-box {
+    background: var(--translucent-white);
+    border:1px solid var(--dark-gray);
+    border-radius:20px;
+    padding:8px 15px;
+    color: var(--white);
+    font-size:14px;
+    width:200px;
+    outline:none;
+}
+.search-box::placeholder { color: var(--dark-gray); }
+.search-box:focus { border-color: var(--white); box-shadow:0 0 8px rgba(255,255,255,0.2); }
+.profile-icon {
+    width:35px; height:35px;
+    border-radius:50%;
+    background: var(--dark-gray);
+    border:2px solid var(--dark-gray);
+    cursor:pointer;
+}
+.profile-icon:hover { border-color:var(--white); box-shadow:0 0 10px var(--white); }
+
+.profile-section {
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:150px 20px 50px;
+}
+.profile-pic {
+    width:150px; height:150px; border-radius:50%;
+    border:4px solid var(--white);
+    object-fit:cover; margin-bottom:20px;
+    box-shadow:0 0 20px rgba(255,255,255,0.3);
+    transition: transform 0.3s;
+}
+.profile-pic:hover { transform: scale(1.05); }
+.profile-name { font-family:'Montserrat'; font-size:2.5rem; font-weight:700; margin-bottom:10px; }
+.profile-bio { font-size:1.1rem; color:var(--light-gray); max-width:600px; margin-bottom:30px; }
+
+.profile-stats { display:flex; gap:40px; justify-content:center; margin-top:20px; align-items:flex-end; }
+.stat-item { text-align:center; }
+.stat-item.level-stat { position:relative; }
+.stat-item.level-stat .crown-icon { position:absolute; top:-25px; left:50%; transform:translateX(-50%); width:25px; height:25px; color:#CD7F32; }
+.stat-value { font-family:'Montserrat'; font-size:1.8rem; font-weight:700; }
+.stat-label { font-size:0.9rem; color:var(--light-gray); white-space:nowrap; }
+
+.edit-profile-btn { background-color:transparent; color:var(--light-gray); border:1px solid var(--dark-gray); padding:10px 20px; border-radius:20px; cursor:pointer; font-weight:600; text-decoration:none; }
+.edit-profile-btn:hover { background-color:var(--translucent-white); border-color:var(--white); color:var(--white); }
+
+.section { padding:100px 20px; max-width:1200px; margin:0 auto; }
+.section-title { font-size:3rem; font-weight:700; text-align:center; margin-bottom:20px; font-family:'Montserrat'; }
+
+.projects-grid, .skills-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:30px; }
+.project-card, .skill-item { background:var(--translucent-white); backdrop-filter:blur(10px); border-radius:20px; padding:30px; transition:all 0.3s ease; box-shadow: inset 0 0 10px rgba(255,255,255,0.1);}
+.project-card:hover, .skill-item:hover { transform: translateY(-5px); box-shadow:0 15px 30px rgba(255,255,255,0.1), inset 0 0 15px rgba(255,255,255,0.2);}
+.project-title, .skill-name { font-family:'Montserrat'; font-size:1.5rem; font-weight:600; }
+.project-description { color:var(--light-gray); line-height:1.6; margin-top:10px; }
+.project-card-image-container {
+    width: 100%;
+    height: 150px;
+    background: var(--dark-gray);
+    border-radius: 10px;
+    margin-bottom: 15px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2rem;
+    color: var(--light-gray);
+}
+.project-card-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* --- Post Card Styling (Profile Page) --- */
+#my-posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    align-items: flex-start;
+    max-width: 800px;
+    margin: 0 auto;
+}
+.profile-post-card {
+    background: var(--translucent-black);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--dark-gray);
+    border-radius: 15px;
+    padding: 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.profile-post-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+.feed-post-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+.feed-post-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.feed-post-info {
+    flex-grow: 1;
+}
+.feed-post-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+}
+.feed-post-date {
+    font-size: 0.8rem;
+    color: var(--light-gray);
+}
+.feed-post-content {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 12px;
+    color: var(--white);
+    flex-grow: 1;
+}
+.feed-post-media-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+    justify-content: center;
+}
+.feed-post-image, .feed-post-video {
+    width: 100%;
+    max-height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+.feed-post-image.single-image {
+    max-height: 200px;
+}
+.feed-post-image.multi-image {
+    width: calc(50% - 4px);
+    max-height: 120px;
+}
+.feed-post-actions {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 12px;
+    border-top: 1px solid var(--dark-gray);
+    margin-top: auto;
+}
+.feed-action-btn {
+    background: none;
+    border: none;
+    color: var(--light-gray);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: color 0.3s ease;
+}
+.feed-action-btn:hover {
+    color: var(--white);
+}
+.feed-action-btn svg {
+    width: 18px;
+    height: 18px;
+}
+.show-more-placeholder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--translucent-black);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--dark-gray);
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--primary-accent);
+}
+.show-more-placeholder:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+.show-more-placeholder-icon {
+    font-size: 4rem;
+}
+.footer {
+    background: var(--translucent-white);
+    backdrop-filter: blur(10px);
+    border-top:1px solid var(--dark-gray);
+    padding:60px 20px 20px; margin-top:100px;
+}
+.footer-content { max-width:1200px; margin:0 auto; }
+.footer-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:40px; margin-bottom:40px; }
+.footer-section h3 { color:var(--white); font-weight:600; margin-bottom:20px; }
+.footer-section ul { list-style:none; }
+.footer-section ul li { margin-bottom:10px; }
+.footer-section ul li a { color:var(--light-gray); text-decoration:none; }
+.footer-section ul li a:hover { color:var(--white); }
+.footer-bottom { border-top:1px solid var(--dark-gray); padding-top:20px; text-align:center; color:var(--dark-gray); }
+
+@media(max-width:768px){
+    .nav-links { display:none; }
+    .search-box { width:150px; }
+    .profile-stats { flex-direction:column; gap:20px; }
+    .projects-grid, .skills-grid { grid-template-columns:1fr; }
+    #my-posts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+<body class="light-theme">
+<div id="notification-bar" style="position:fixed;top:0;right:0;z-index:2000;padding:18px 32px 0 0;">
+    <button id="bell-btn" style="background:none;border:none;cursor:pointer;outline:none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14V11c0-3.07-1.64-5.64-4.5-6.32V4a1.5 1.5 0 00-3 0v.68C5.64 5.36 4 7.92 4 11v3c0 .386-.149.735-.405 1.005L2 17h5m5 0v1a3 3 0 11-6 0v-1m6 0H9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+</div>
+<div class="nav-container">
+    <nav class="nav">
+    <div class="logo">Talio</div>
+        <ul class="nav-links">
+            <li><a id="nav-home-link" href="../home.html">Home</a></li>
+            <li><a id="nav-explore-link" href="../connection.html">Explore</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#services">Services</a></li>
+        </ul>
+        <div class="nav-right">
+            <input type="text" class="search-box" placeholder="Search...">
+            <div class="profile-icon" id="nav-profile-icon"></div>
+            <span id="nav-user-name" style="margin-left:10px;font-weight:600;"></span>
+        </div>
+    </nav>
+</div>
+
+<section class="profile-section">
+    <img id="profile-pic" src="https://i.pravatar.cc/150?u=a" alt="Profile Picture" class="profile-pic">
+    <h1 id="profile-name" class="profile-name"></h1>
+    <p id="profile-bio" class="profile-bio"></p>
+    <div class="profile-stats">
+        <div class="stat-item level-stat">
+            <span class="crown-icon">&#127942;</span>
+            <span id="level-meter" class="stat-value">0</span>
+            <span id="position-label" class="stat-label">Beginner</span>
+        </div>
+        <div class="stat-item">
+            <span id="points-value" class="stat-value">0</span>
+            <span class="stat-label">Points</span>
+        </div>
+        <div class="stat-item">
+            <span id="level-value" class="stat-value">0</span>
+            <span class="stat-label">Level</span>
+        </div>
+    </div>
+    <div class="follow-btn-container">
+        <a id="edit-profile-link" href="edit.html" class="edit-profile-btn">Edit Profile</a>
+    </div>
+</section>
+
+<section class="section">
+    <h2 class="section-title">My Projects</h2>
+    <div class="projects-grid" id="projects-grid"></div>
+</section>
+
+<section class="section">
+    <h2 class="section-title">My Education</h2>
+    <div class="skills-grid" id="education-grid" style="margin-bottom:40px;"></div>
+</section>
+<section class="section">
+    <h2 class="section-title">My Skills</h2>
+    <div class="skills-grid" id="skills-grid"></div>
+</section>
+
+<section class="section">
+    <h2 class="section-title">My Posts</h2>
+    <div id="my-posts-grid"></div>
+</section>
+
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h3>Platform</h3>
+                <ul>
+                    <li><a href="#explore">Explore Quests</a></li>
+                    <li><a href="#skills">Find Skills</a></li>
+                    <li><a href="#teams">Join Guilds</a></li>
+                    <li><a href="#resources">Resources</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Community</h3>
+                <ul>
+                    <li><a href="#guidelines">Community Guidelines</a></li>
+                    <li><a href="#events">Events</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#success">Success Stories</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Support</h3>
+                <ul>
+                    <li><a href="#help">Help Center</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
+                    <li><a href="#feedback">Feedback</a></li>
+                    <li><a href="#status">System Status</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="#about">About Talio</a></li>
+                    <li><a href="#careers">Careers</a></li>
+                    <li><a href="#press">Press</a></li>
+                    <li><a href="#terms">Terms & Privacy</a></li>
+                </ul>
+            </div>
+        </div>
+    <div class="footer-bottom">&copy; 2025 Talio. All rights reserved.</div>
+    </div>
+</footer>
+<div class="mentoring-create-container" style="margin:48px auto 32px auto; text-align:center; max-width:600px;">
+    <p style="font-size:1.2rem; color:var(--primary-accent); font-weight:600; margin-bottom:8px;">Want to create a mentoring session?</p>
+    <a href="#" id="createMentoringSessionBtn" class="add-module-btn" style="font-size:2rem; color:var(--primary-accent); text-decoration:none; border-radius:50%; border:2px solid var(--primary-accent); padding:8px 18px; display:inline-block;">+</a>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var btn = document.getElementById('createMentoringSessionBtn');
+    if (btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '/home/learning/mendor_module.html';
+        });
+    }
+    var bellBtn = document.getElementById('bell-btn');
+    if (bellBtn) {
+        bellBtn.addEventListener('click', function() {
+            window.location.href = './workcollborationreq.html';
+        });
+    }
+});
+</script>
+
+<script type="module">
+document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userEmail = urlParams.get('email');
+
+    if (userEmail) {
+        const navHome = document.getElementById('nav-home-link');
+        const navExplore = document.getElementById('nav-explore-link');
+        if (navHome) navHome.href = `../home.html?email=${encodeURIComponent(userEmail)}`;
+        if (navExplore) navExplore.href = `../connection.html?email=${encodeURIComponent(userEmail)}`;
+        
+        const fetchUserData = async () => {
+            try {
+                const response = await fetch(`/api/profile/get-data?email=${encodeURIComponent(userEmail)}`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            } catch (error) {
+                console.error('Failed to fetch user data:', error);
+                window.location.href = '/home/authentication/login.html';
+                return null;
+            }
+        };
+
+        const fetchUserPosts = async () => {
+            try {
+                const response = await fetch(`/api/posts/get?email=${encodeURIComponent(userEmail)}`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            } catch (error) {
+                console.error('Error fetching posts:', error);
+                return [];
+            }
+        };
+
+        const renderPosts = (posts, profilePic, userName) => {
+            const postsGrid = document.getElementById('my-posts-grid');
+            postsGrid.innerHTML = '';
+            
+            if (Array.isArray(posts) && posts.length > 0) {
+                const postsToShow = posts.slice(0, 4);
+                postsToShow.forEach(post => {
+                    const postDiv = document.createElement('div');
+                    postDiv.className = 'profile-post-card';
+                    let mediaHtml = '';
+                    if (post.video_url) {
+                        mediaHtml = `<div class='feed-post-media-container'><video class='feed-post-video' controls src='${post.video_url}'></video></div>`;
+                    } else if (post.images) {
+                        try {
+                            const images = JSON.parse(post.images);
+                            if (Array.isArray(images) && images.length > 0) {
+                                mediaHtml = `<div class='feed-post-media-container'>` +
+                                    images.map(url => `<img class='feed-post-image' src='${url}' alt='Post image'>`).join('') +
+                                    `</div>`;
+                            }
+                        } catch (e) { console.error('Error parsing images:', e); }
+                    }
+                    postDiv.innerHTML = `
+                        <div class="feed-post-header">
+                            <img src="${profilePic}" alt="${userName}'s profile picture" class="feed-post-avatar">
+                            <div class="feed-post-info">
+                                <div class="feed-post-name">${userName}</div>
+                                <div class="feed-post-date">${new Date(post.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at ${new Date(post.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}</div>
+                            </div>
+                        </div>
+                        <div class="feed-post-content">${post.content || ''}</div>
+                        ${mediaHtml}
+                        <div class="feed-post-actions">
+                            <button class="feed-action-btn like-btn" data-id="${post.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+                                <span>Like</span>
+                            </button>
+                            <button class="feed-action-btn comment-btn" data-id="${post.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                <span>Comment</span>
+                            </button>
+                            <button class="feed-action-btn share-btn" data-id="${post.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                                <span>Share</span>
+                            </button>
+                        </div>
+                    `;
+                    postsGrid.appendChild(postDiv);
+                });
+                if (posts.length > 4) {
+                    const showMoreDiv = document.createElement('a');
+                    showMoreDiv.href = `posts.html?email=${encodeURIComponent(userEmail)}`;
+                    showMoreDiv.className = 'show-more-placeholder';
+                    showMoreDiv.innerHTML = `<span class="show-more-placeholder-icon">+</span>`;
+                    postsGrid.appendChild(showMoreDiv);
+                }
+            } else {
+                postsGrid.innerHTML = '<div class="profile-post-card">No posts yet.</div>';
+            }
+        };
+
+        const renderSkills = (skills) => {
+            const skillsGrid = document.getElementById('skills-grid');
+            skillsGrid.innerHTML = '';
+            if (Array.isArray(skills) && skills.length > 0) {
+                skills.forEach(skill => {
+                    const skillDiv = document.createElement('div');
+                    skillDiv.className = 'skill-item';
+                    skillDiv.innerHTML = `<span class="skill-name">${skill}</span>`;
+                    skillsGrid.appendChild(skillDiv);
+                });
+            } else {
+                skillsGrid.innerHTML = '<div class="skill-item">No skills added yet.</div>';
+            }
+        };
+
+        const renderEducation = (education) => {
+            const educationGrid = document.getElementById('education-grid');
+            educationGrid.innerHTML = '';
+            if (Array.isArray(education) && education.length > 0) {
+                education.forEach(edu => {
+                    const eduDiv = document.createElement('div');
+                    eduDiv.className = 'skill-item';
+                    eduDiv.innerHTML = `<span class="skill-name">${edu.course} at ${edu.institution}</span>`;
+                    educationGrid.appendChild(eduDiv);
+                });
+            } else {
+                educationGrid.innerHTML = '<div class="skill-item">No education added yet.</div>';
+            }
+        };
+        
+        const renderProjects = (projects) => {
+            const projectsGrid = document.getElementById('projects-grid');
+            projectsGrid.innerHTML = '';
+            if (Array.isArray(projects) && projects.length > 0) {
+                projects.forEach(project => {
+                    const projectDiv = document.createElement('div');
+                    projectDiv.className = 'project-card';
+                    const projectTags = project.project_tags ? JSON.parse(project.project_tags) : [];
+                    const isCreator = project.creator_email === userEmail;
+                    const roleText = isCreator ? 'Created by you' : 'Joined';
+                    projectDiv.innerHTML = `
+                        <div class="project-card-image-container">
+                             <img src="https://placehold.co/300x150/6c63ff/FFFFFF?text=${project.project_name.replace(/\s/g, '+')}" alt="Project image">
+                        </div>
+                        <h4 class="project-title">${project.project_name}</h4>
+                        <p class="project-description">${roleText}</p>
+                        <div class="tech-stack">
+                            ${projectTags.map(tag => `<span class="tech-tag">${tag}</span>`).join('')}
+                        </div>
+                    `;
+                    projectsGrid.appendChild(projectDiv);
+                });
+            } else {
+                projectsGrid.innerHTML = '<div>No projects added yet.</div>';
+            }
+        };
+
+        (async () => {
+            const userData = await fetchUserData();
+            if (userData) {
+                const navUserName = document.getElementById('nav-user-name');
+                const navProfileIcon = document.getElementById('nav-profile-icon');
+                navUserName.textContent = userData.name;
+                const profilePic = userData.profile_pic || `https://placehold.co/35x35/6c63ff/FFFFFF?text=${userData.name.charAt(0)}${userData.name.split(' ')[1] ? userData.name.split(' ')[1].charAt(0) : ''}`;
+                navProfileIcon.style.backgroundImage = `url('${profilePic}')`;
+                navProfileIcon.style.backgroundSize = 'cover';
+                
+                document.getElementById('profile-name').textContent = userData.name;
+                document.getElementById('profile-bio').textContent = userData.bio || 'No bio provided yet.';
+                document.getElementById('points-value').textContent = userData.points || 0;
+                document.getElementById('level-value').textContent = userData.level || 0;
+                document.getElementById('position-label').textContent = userData.position || 'Beginner';
+                document.getElementById('profile-pic').src = userData.profile_pic || `https://i.pravatar.cc/150?u=${userData.email}`;
+
+                // Fetch and render projects
+                const projects = await fetchProjects();
+                renderProjects(projects);
+
+                renderEducation(userData.education);
+                renderSkills(userData.skills);
+                
+                const posts = await fetchUserPosts();
+                if (posts) {
+                    renderPosts(posts, profilePic, userData.name);
+                }
+            }
+        })();
+    } else {
+        window.location.href = '/home/authentication/login.html';
+    }
+});
+</script>
+</body>
+</html>

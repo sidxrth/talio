@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - Talio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #080808;
+            --white: #F8F8F8;
+            --light-gray: #CCCCCC;
+            --dark-gray: #444444;
+            --translucent-white: rgba(255, 255, 255, 0.05);
+            --translucent-black: rgba(0, 0, 0, 0.05);
+            --primary-accent: #6c63ff;
+        }
+        .light-theme {
+            --black: #F8F8F8;
+            --white: #080808;
+            --light-gray: #444444;
+            --dark-gray: #CCCCCC;
+            --translucent-white: rgba(0, 0, 0, 0.05);
+            --translucent-black: rgba(255, 255, 255, 0.05);
+            --primary-accent: #6c63ff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--black);
+            color: var(--white);
+            overflow-x: hidden;
+            position: relative;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            padding-top: 100px;
+        }
+        .particles-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .particle {
+            position: absolute;
+            background-color: var(--dark-gray);
+            border-radius: 50%;
+            opacity: 0;
+            animation: move-particle 20s infinite linear;
+        }
+        @keyframes move-particle {
+            0% { transform: translate(var(--x-start), var(--y-start)); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translate(var(--x-end), var(--y-end)); opacity: 0; }
+        }
+        .nav-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 95%;
+            max-width: 1200px;
+        }
+        .nav {
+            background: var(--translucent-black);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--dark-gray);
+            border-radius: 50px;
+            padding: 10px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+        .edit-profile-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 40px;
+            background: var(--translucent-black);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid var(--dark-gray);
+        }
+        .edit-profile-container h1 {
+            font-family: 'Montserrat', sans-serif;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            color: var(--white);
+        }
+        .profile-form-group { margin-bottom: 25px; }
+        .profile-form-group h3 {
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 15px;
+            color: var(--light-gray);
+            border-bottom: 1px solid var(--dark-gray);
+            padding-bottom: 10px;
+        }
+        .profile-form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--light-gray);
+            font-weight: 500;
+        }
+        .profile-form-group input,
+        .profile-form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--dark-gray);
+            background: var(--translucent-white);
+            color: var(--white);
+            border-radius: 8px;
+            font-size: 1rem;
+            resize: vertical;
+        }
+        .profile-form-group input::placeholder,
+        .profile-form-group textarea::placeholder {
+            color: var(--dark-gray);
+        }
+        .profile-form-group input:focus,
+        .profile-form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 5px rgba(108, 99, 255, 0.5);
+        }
+        .profile-form-group .add-btn {
+            background-color: transparent;
+            color: var(--primary-accent);
+            border: 1px dashed var(--primary-accent);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+        .profile-form-group .add-btn:hover { background-color: rgba(108, 99, 255, 0.2); }
+        .dynamic-list-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        .dynamic-list-item input { margin-bottom: 0; }
+        .dynamic-list-item .remove-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .dynamic-list-item .remove-btn:hover { background: #c0392b; }
+        .project-inputs {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border: 1px solid var(--dark-gray);
+        }
+        .save-changes-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-accent);
+            color: var(--white);
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        .save-changes-btn:hover { background-color: #554cd6; }
+    </style>
+</head>
+<body class="light-theme">
+    <div class="particles-bg"></div>
+    <div class="nav-container"></div>
+    <div class="edit-profile-container">
+        <h1>Edit Your Profile</h1>
+        <form id="profile-form">
+            <div class="profile-form-group">
+                <label for="profile-name">Full Name</label>
+                <input type="text" id="profile-name" value="">
+            </div>
+            <div class="profile-form-group">
+                <label for="profile-bio">Bio</label>
+                <textarea id="profile-bio" rows="4" placeholder="Tell us about yourself..."></textarea>
+            </div>
+            <div class="profile-form-group">
+                <label for="profile-pic">Change Profile Picture</label>
+                <input type="file" id="profile-pic" accept="image/*">
+                <img id="profile-pic-preview" style="max-width: 150px; border-radius: 50%; margin-top: 10px; display: none;">
+            </div>
+            <div class="profile-form-group">
+                <h3>Education</h3>
+                <div id="education-list"></div>
+                <button type="button" class="add-btn" id="add-education-btn">Add Education</button>
+            </div>
+            <div class="profile-form-group">
+                <h3>Skills</h3>
+                <div id="skills-list"></div>
+                <button type="button" class="add-btn" id="add-skill-btn">Add Skill</button>
+            </div>
+            <button type="submit" class="save-changes-btn">Save Changes</button>
+        </form>
+    </div>
+    <script>
+        const educationList = document.getElementById('education-list');
+        const addEducationBtn = document.getElementById('add-education-btn');
+        const skillsList = document.getElementById('skills-list');
+        const addSkillBtn = document.getElementById('add-skill-btn');
+        const profilePicInput = document.getElementById('profile-pic');
+        const profilePicPreview = document.getElementById('profile-pic-preview');
+
+        // Function to create a new education input field
+        function createEducationInput(value = '') {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'dynamic-list-item';
+            wrapper.innerHTML = `
+                <input type="text" placeholder="e.g., MIT, B.S. in Computer Science" value="${value}">
+                <button type="button" class="remove-btn">x</button>
+            `;
+            const removeBtn = wrapper.querySelector('.remove-btn');
+            removeBtn.addEventListener('click', () => wrapper.remove());
+            educationList.appendChild(wrapper);
+        }
+
+        // Function to create a new skill input field
+        function createSkillInput(value = '') {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'dynamic-list-item';
+            wrapper.innerHTML = `
+                <input type="text" placeholder="e.g., Python, Machine Learning" value="${value}">
+                <button type="button" class="remove-btn">x</button>
+            `;
+            const removeBtn = wrapper.querySelector('.remove-btn');
+            removeBtn.addEventListener('click', () => wrapper.remove());
+            skillsList.appendChild(wrapper);
+        }
+
+        // Add event listeners for the "Add" buttons
+        addEducationBtn.addEventListener('click', () => createEducationInput());
+        addSkillBtn.addEventListener('click', () => createSkillInput());
+
+        // Asynchronous function to fetch and populate form data
+        async function initForm() {
+            try {
+                const response = await fetch('/api/profile/get-data');
+                if (response.ok) {
+                    const userData = await response.json();
+                    document.getElementById('profile-name').value = userData.name;
+                    document.getElementById('profile-bio').value = userData.bio || '';
+                    if (userData.profile_pic) {
+                        profilePicPreview.src = userData.profile_pic;
+                        profilePicPreview.style.display = 'block';
+                    }
+                    educationList.innerHTML = '';
+                    if (userData.education && userData.education.length > 0) {
+                        userData.education.forEach(item => createEducationInput(item));
+                    }
+                    skillsList.innerHTML = '';
+                    if (userData.skills && userData.skills.length > 0) {
+                        userData.skills.forEach(item => createSkillInput(item));
+                    }
+                } else {
+                    const errorData = await response.json();
+                    alert('Error loading profile data: ' + errorData.message);
+                    if (response.status === 401) {
+                        window.location.href = '../authentication/login.html';
+                    }
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+                alert('A network error occurred while loading profile data. Please try again.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initForm);
+
+        // Handle form submission to save data
+        document.querySelector('.save-changes-btn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('profile-name').value;
+            const bio = document.getElementById('profile-bio').value;
+            const educationInputs = document.querySelectorAll('#education-list input');
+            const education = Array.from(educationInputs).map(input => input.value).filter(val => val.trim() !== '');
+            const skillInputs = document.querySelectorAll('#skills-list input');
+            const skills = Array.from(skillInputs).map(input => input.value).filter(val => val.trim() !== '');
+            try {
+                const response = await fetch('/api/profile/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, bio, education, skills })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    alert(data.message);
+                    window.history.back();
+                } else {
+                    alert('Failed to save changes: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while saving.');
+            }
+        });
+
+        // Profile picture upload and preview
+        profilePicInput.addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('profile_pic', file);
+
+            try {
+                const response = await fetch('/api/profile/upload-photo', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                    if (response.ok && data.url) {
+                        profilePicPreview.src = data.url;
+                        profilePicPreview.style.display = 'block';
+                        // Update profile image on home.html and profile.html if present
+                        const homeAvatar = window.parent.document.getElementById('user-avatar');
+                        if (homeAvatar) homeAvatar.src = data.url;
+                        const profileAvatar = window.parent.document.getElementById('profile-pic');
+                        if (profileAvatar) profileAvatar.src = data.url;
+                        // Remove any error message
+                        // Optionally show a success message
+                } else {
+                    alert('Failed to upload: ' + (data.message || 'Unknown error'));
+                }
+            } catch (err) {
+                console.error('Error uploading image:', err);
+                alert('Error uploading image.');
+            }
+        });
+    </script>
+</body>
+</html>

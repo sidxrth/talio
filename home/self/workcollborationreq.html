@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Join Requests</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #080808;
+            --white: #F8F8F8;
+            --light-gray: #CCCCCC;
+            --dark-gray: #444444;
+            --translucent-white: rgba(255, 255, 255, 0.05);
+            --translucent-black: rgba(0, 0, 0, 0.05);
+            --primary-blue: #4A90E2;
+            --secondary-green: #10b981;
+            --warning-red: #ef4444;
+        }
+
+        .light-theme {
+            --black: #F8F8F8;
+            --white: #080808;
+            --light-gray: #444444;
+            --dark-gray: #CCCCCC;
+            --translucent-white: rgba(0, 0, 0, 0.05);
+            --translucent-black: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--black);
+            color: var(--white);
+            line-height: 1.6;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            padding-top: 100px;
+        }
+
+        .nav-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 95%;
+            max-width: 1200px;
+        }
+
+        .nav {
+            background: var(--translucent-black);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--dark-gray);
+            border-radius: 50px;
+            padding: 10px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .nav:hover {
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--light-gray);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--white);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-box {
+            background: var(--translucent-white);
+            border: 1px solid var(--dark-gray);
+            border-radius: 20px;
+            padding: 8px 15px;
+            color: var(--white);
+            font-size: 14px;
+            width: 200px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-box::placeholder {
+            color: var(--dark-gray);
+        }
+
+        .search-box:focus {
+            border-color: var(--white);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+        }
+
+        .profile-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--dark-gray);
+            border: 2px solid var(--dark-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .profile-icon:hover {
+            border-color: var(--white);
+            box-shadow: 0 0 10px var(--white);
+        }
+
+        .main-content {
+            padding: 40px 20px;
+            max-width: 1000px;
+            margin: 100px auto 0;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+        
+        .request-header {
+            text-align: center;
+        }
+        
+        .request-header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: var(--white);
+        }
+
+        .request-header p {
+            font-size: 18px;
+            opacity: 0.9;
+            color: var(--light-gray);
+        }
+
+        .request-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .request-card {
+            background: var(--translucent-white);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--dark-gray);
+            border-radius: 20px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .request-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .request-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .request-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--dark-gray);
+        }
+        
+        .request-details h4 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .request-details p {
+            font-size: 0.9rem;
+            color: var(--light-gray);
+        }
+
+        .request-details a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .request-message {
+            font-style: italic;
+            color: var(--light-gray);
+            border-left: 3px solid var(--primary-blue);
+            padding-left: 12px;
+            margin-left: 20px;
+        }
+
+        .request-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: auto;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .approve-btn {
+            background-color: var(--secondary-green);
+            color: var(--white);
+            border: none;
+        }
+
+        .approve-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .reject-btn {
+            background-color: transparent;
+            color: var(--warning-red);
+            border: 2px solid var(--warning-red);
+        }
+
+        .reject-btn:hover {
+            background-color: var(--warning-red);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        .no-requests-message {
+            text-align: center;
+            padding: 40px;
+            color: var(--light-gray);
+            font-size: 1.2rem;
+            grid-column: 1 / -1;
+        }
+    </style>
+</head>
+<body class="light-theme">
+    <div class="nav-container">
+        <nav class="nav">
+            <div class="logo">Talio</div>
+            <ul class="nav-links">
+                <li><a id="nav-home-link" href="../home/home.html">Home</a></li>
+                <li><a id="nav-explore-link" href="connection.html">Explore</a></li>
+                <li><a id="nav-learn-link" href="learning/learn.html">Learn</a></li>
+                <li><a href="#Projects">Projects</a></li>
+            </ul>
+            <div class="nav-right">
+                <input type="text" class="search-box" placeholder="Search...">
+                <div class="profile-icon" id="nav-profile-icon"></div>
+                <span id="nav-user-name" style="margin-left:10px;font-weight:600;"></span>
+            </div>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="request-header">
+            <h1>Incoming Join Requests</h1>
+            <p>Manage applications for your projects and teams.</p>
+        </div>
+        <div class="request-grid" id="requestsGrid">
+            <p class="no-requests-message">No pending requests at this time.</p>
+        </div>
+    </div>
+
+    <script>
+        let userEmail = null;
+        let token = null;
+
+        const createRequestCard = (request) => {
+            const card = document.createElement('div');
+            card.className = 'request-card';
+            card.setAttribute('data-request-id', request.id);
+            card.setAttribute('data-team-id', request.team_id);
+            card.setAttribute('data-requester-email', request.requester_email);
+
+            card.innerHTML = `
+                <div class="request-info">
+                    <img class="request-avatar" src="https://i.pravatar.cc/100?u=${request.requester_email}" alt="Applicant Avatar">
+                    <div class="request-details">
+                        <h4>${request.requester_name || request.requester_email}</h4>
+                        <p>Team: <strong>${request.team_name}</strong></p>
+                        <p>Applying for role: <strong>${request.requested_role}</strong></p>
+                        <a href="/home/self/profile.html?email=${encodeURIComponent(request.requester_email)}" target="_blank">View Profile</a>
+                    </div>
+                </div>
+                <div class="request-message">
+                    Requested on: ${new Date(request.created_at).toLocaleDateString()}
+                </div>
+                <div class="request-actions">
+                    <button class="action-btn approve-btn" data-action="approve">Approve</button>
+                    <button class="action-btn reject-btn" data-action="reject">Reject</button>
+                </div>
+            `;
+            return card;
+        };
+
+        const renderRequests = (requests) => {
+            const requestsGrid = document.getElementById('requestsGrid');
+            requestsGrid.innerHTML = '';
+            if (requests.length > 0) {
+                requests.forEach(request => {
+                    requestsGrid.appendChild(createRequestCard(request));
+                });
+            } else {
+                requestsGrid.innerHTML = `<p class="no-requests-message">No pending requests at this time.</p>`;
+            }
+        };
+
+        const fetchRequests = async () => {
+            const requestsGrid = document.getElementById('requestsGrid');
+            requestsGrid.innerHTML = '<p class="no-requests-message">Loading requests...</p>';
+
+            try {
+                const response = await fetch(`/api/teams/join-requests?email=${encodeURIComponent(userEmail)}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch requests.');
+                }
+                const requests = await response.json();
+                renderRequests(requests);
+            } catch (error) {
+                console.error('Error fetching requests:', error);
+                requestsGrid.innerHTML = `<p class="no-requests-message">Failed to load requests. Please try again.</p>`;
+            }
+        };
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            userEmail = urlParams.get('email');
+            token = localStorage.getItem('token');
+            
+            if (!userEmail || !token) {
+                window.location.href = '/home/authentication/login.html';
+                return;
+            }
+
+            fetchRequests();
+
+            document.getElementById('requestsGrid').addEventListener('click', async (e) => {
+                const button = e.target.closest('.action-btn');
+                if (!button) return;
+
+                const card = e.target.closest('.request-card');
+                const requestId = card.getAttribute('data-request-id');
+                const action = button.getAttribute('data-action');
+                
+                button.disabled = true;
+                button.textContent = 'Processing...';
+
+                try {
+                    const response = await fetch('/api/teams/update-join-request', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ requestId, action })
+                    });
+                    
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.message || 'Failed to process request.');
+                    }
+                    
+                    const result = await response.json();
+                    alert(result.message);
+                    
+                    fetchRequests();
+                    
+                } catch (error) {
+                    console.error('Error updating request:', error);
+                    button.disabled = false;
+                    button.textContent = action === 'approve' ? 'Approve' : 'Reject';
+                    alert('Failed to process request. Please try again.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn from Mentors - Talio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Base Styles and Themes (from reference files) --- */
+        :root {
+            --black: #080808;
+            --white: #F8F8F8;
+            --light-gray: #CCCCCC;
+            --dark-gray: #444444;
+            --translucent-white: rgba(255, 255, 255, 0.05);
+            --translucent-black: rgba(0, 0, 0, 0.05);
+            --primary-accent: #6c63ff;
+        }
+
+        .light-theme {
+            --black: #F8F8F8;
+            --white: #080808;
+            --light-gray: #444444;
+            --dark-gray: #CCCCCC;
+            --translucent-white: rgba(0, 0, 0, 0.05);
+            --translucent-black: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--black);
+            color: var(--white);
+            overflow-x: hidden;
+            position: relative;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* --- Particles Background (from reference files) --- */
+        .particles-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background-color: var(--dark-gray);
+            border-radius: 50%;
+            opacity: 0;
+            animation: move-particle 20s infinite linear;
+        }
+
+        @keyframes move-particle {
+            0% { transform: translate(var(--x-start), var(--y-start)); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translate(var(--x-end), var(--y-end)); opacity: 0; }
+        }
+
+        /* --- Navigation (from reference files) --- */
+        .nav-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 95%;
+            max-width: 1200px;
+        }
+
+        .nav {
+            background: var(--translucent-black);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--dark-gray);
+            border-radius: 50px;
+            padding: 10px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--light-gray);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--white);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-search-box {
+            background: var(--translucent-white);
+            border: 1px solid var(--dark-gray);
+            border-radius: 20px;
+            padding: 8px 15px;
+            color: var(--white);
+            font-size: 14px;
+            width: 200px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .nav-search-box::placeholder {
+            color: var(--dark-gray);
+        }
+
+        .sign-up-btn {
+            background: var(--white);
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            color: var(--black);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .profile-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--dark-gray);
+            border: 2px solid var(--dark-gray);
+            cursor: pointer;
+        }
+
+        /* --- Main Content for Learn Page --- */
+        .learn-container {
+            padding: 120px 20px 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .learn-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .learn-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 15px;
+        }
+
+        .search-area {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .learn-search-input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1rem;
+            border-radius: 30px;
+            border: 1px solid var(--dark-gray);
+            background: var(--translucent-black);
+            color: var(--white);
+            backdrop-filter: blur(10px);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .learn-search-input:focus {
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 15px rgba(108, 99, 255, 0.3);
+        }
+
+        /* --- Mentors Grid --- */
+        .mentors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .mentor-card {
+            background: var(--translucent-white);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--dark-gray);
+            border-radius: 20px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mentor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-color: var(--light-gray);
+        }
+
+        .mentor-photo {
+            width: 100%;
+            padding-top: 100%; /* 1:1 Aspect Ratio */
+            border-radius: 15px;
+            background-size: cover;
+            background-position: center;
+            margin-bottom: 15px;
+        }
+
+        .mentor-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .mentor-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .mentor-level {
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 15px;
+            color: var(--white);
+        }
+        
+        .level-expert { background-color: #c0392b; }
+        .level-advanced { background-color: #8e44ad; }
+        .level-intermediate { background-color: #2980b9; }
+
+        .mentor-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: auto; /* Pushes skills to the bottom */
+        }
+
+        .skill-tag {
+            background: var(--dark-gray);
+            color: var(--white);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .no-results {
+            text-align: center;
+            color: var(--light-gray);
+            font-size: 1.2rem;
+            padding: 50px 0;
+            display: none; /* Initially hidden */
+            grid-column: 1 / -1; /* Span all columns */
+        }
+
+        /* --- Footer (from reference files) --- */
+        .footer {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--dark-gray);
+            padding: 60px 20px 20px;
+            margin-top: 100px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            color: var(--white);
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .footer-section ul { list-style: none; }
+        .footer-section ul li { margin-bottom: 10px; }
+        .footer-section ul li a {
+            color: var(--light-gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer-section ul li a:hover { color: var(--white); }
+
+        .footer-bottom {
+            border-top: 1px solid var(--dark-gray);
+            padding-top: 20px;
+            text-align: center;
+            color: var(--dark-gray);
+        }
+        
+        /* --- Responsive --- */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .learn-title { font-size: 2.5rem; }
+        }
+
+    </style>
+</head>
+<body class="light-theme">
+    <div class="particles-bg"></div>
+
+    <!-- Navigation Bar -->
+    <div class="nav-container">
+        <nav class="nav">
+            <div class="logo">Talio</div>
+            <ul class="nav-links">
+                <li><a id="nav-home-link" href="../home.html">Home</a></li>
+                <li><a id="nav-explore-link" href="../connection.html">Explore</a></li>
+                <li><a id="nav-learn-link" href="learning/learn.html">Learn</a></li>
+                <li><a href="#Projects">Projects</a></li>
+            </ul>
+            <div class="nav-right">
+                <input type="text" class="search-box" placeholder="Search...">
+                <div class="profile-icon" id="nav-profile-icon"></div>
+                <span id="nav-user-name" style="margin-left:10px;font-weight:600;"></span>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <main class="learn-container">
+        <header class="learn-header">
+            <h1 class="learn-title">LEARN</h1>
+            <div class="search-area">
+                <input type="text" id="skillSearch" class="learn-search-input" placeholder="Search for skills like Web Development, AI, Cloud...">
+            </div>
+        </header>
+
+        <!-- Video Preview Section -->
+        <section id="video-preview" style="display: flex; justify-content: center; margin-bottom: 40px;">
+            <div style="cursor: pointer; max-width: 400px; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.12); transition: box-shadow 0.2s;" onclick="window.location.href='video.html'">
+                <img src="https://placehold.co/400x225/6c63ff/FFFFFF?text=Watch+Mentor+Video" alt="Mentor Video" style="width: 100%; display: block;">
+                <div style="background: var(--primary-accent); color: #fff; padding: 16px; font-size: 1.1rem; font-weight: 600; text-align: center;">Watch Mentor Video</div>
+            </div>
+        </section>
+
+        <!-- Mentors Grid -->
+        <section class="mentors-grid" id="mentorsGrid">
+            <!-- Mentor Card 1 -->
+            <div class="mentor-card" data-skills="Web Development,Front End,React,JavaScript,UI/UX">
+                <div class="mentor-photo" style="background-image: url('https://placehold.co/300x300/6c63ff/FFFFFF?text=JD');"></div>
+                <div class="mentor-info">
+                    <h3 class="mentor-name">Jane Doe</h3>
+                    <span class="mentor-level level-expert">Expert</span>
+                </div>
+                <div class="mentor-skills">
+                    <span class="skill-tag">Web Development</span>
+                    <span class="skill-tag">Front End</span>
+                    <span class="skill-tag">React</span>
+                </div>
+            </div>
+
+            <!-- Mentor Card 2 -->
+            <div class="mentor-card" data-skills="AI,Machine Learning,Python,Data Science">
+                <div class="mentor-photo" style="background-image: url('https://placehold.co/300x300/3498db/FFFFFF?text=JS');"></div>
+                <div class="mentor-info">
+                    <h3 class="mentor-name">John Smith</h3>
+                    <span class="mentor-level level-expert">Expert</span>
+                </div>
+                <div class="mentor-skills">
+                    <span class="skill-tag">AI</span>
+                    <span class="skill-tag">Machine Learning</span>
+                    <span class="skill-tag">Python</span>
+                </div>
+            </div>
+            
+            <!-- Mentor Card 3 -->
+            <div class="mentor-card" data-skills="Cloud Computing,AWS,DevOps,Docker">
+                <div class="mentor-photo" style="background-image: url('https://placehold.co/300x300/e67e22/FFFFFF?text=AS');"></div>
+                <div class="mentor-info">
+                    <h3 class="mentor-name">Alex Smith</h3>
+                    <span class="mentor-level level-advanced">Advanced</span>
+                </div>
+                <div class="mentor-skills">
+                    <span class="skill-tag">Cloud Computing</span>
+                    <span class="skill-tag">AWS</span>
+                    <span class="skill-tag">DevOps</span>
+                </div>
+            </div>
+
+            <!-- Mentor Card 4 -->
+            <div class="mentor-card" data-skills="Mobile Development,iOS,Swift,Front End">
+                <div class="mentor-photo" style="background-image: url('https://placehold.co/300x300/1abc9c/FFFFFF?text=EM');"></div>
+                <div class="mentor-info">
+                    <h3 class="mentor-name">Emily White</h3>
+                    <span class="mentor-level level-advanced">Advanced</span>
+                </div>
+                <div class="mentor-skills">
+                    <span class="skill-tag">Mobile Dev</span>
+                    <span class="skill-tag">iOS</span>
+                    <span class="skill-tag">Swift</span>
+                </div>
+            </div>
+            
+            <!-- Mentor Card 5 -->
+            <div class="mentor-card" data-skills="Back End,Node.js,Databases,API,Web Development">
+                <div class="mentor-photo" style="background-image: url('https://placehold.co/300x300/9b59b6/FFFFFF?text=MB');"></div>
+                <div class="mentor-info">
+                    <h3 class="mentor-name">Michael Brown</h3>
+                    <span class="mentor-level level-intermediate">Intermediate</span>
+                </div>
+                <div class="mentor-skills">
+                    <span class="skill-tag">Back End</span>
+                    <span class="skill-tag">Node.js</span>
+                    <span class="skill-tag">Databases</span>
+                </div>
+            </div>
+
+            <!-- Mentor Card 6 -->
+            <div class="mentor-card" data-skills="UI/UX,Figma,Web Design,Front End">
+                <div class="mentor-photo" style="background-image: url('https://placehold.co/300x300/f1c40f/FFFFFF?text=SG');"></div>
+                <div class="mentor-info">
+                    <h3 class="mentor-name">Sarah Green</h3>
+                    <span class="mentor-level level-intermediate">Intermediate</span>
+                </div>
+                <div class="mentor-skills">
+                    <span class="skill-tag">UI/UX</span>
+                    <span class="skill-tag">Figma</span>
+                    <span class="skill-tag">Web Design</span>
+                </div>
+            </div>
+            
+            <div class="no-results" id="noResults">
+                <p>No mentors found matching your search.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3>Platform</h3>
+                    <ul>
+                        <li><a href="#">Explore Quests</a></li>
+                        <li><a href="#">Find Skills</a></li>
+                        <li><a href="#">Join Guilds</a></li>
+                        <li><a href="#">Resources</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Community</h3>
+                    <ul>
+                        <li><a href="#">Guidelines</a></li>
+                        <li><a href="#">Events</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Success Stories</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Feedback</a></li>
+                        <li><a href="#">System Status</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#">About Talio</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press Kit</a></li>
+                        <li><a href="#">Partners</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Talio. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+                // --- Session propagation, fetch user info, and Particle Background Animation ---
+                document.addEventListener('DOMContentLoaded', () => {
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const userEmail = urlParams.get('email');
+                        if (userEmail) {
+                                const navHome = document.getElementById('nav-home-link');
+                                const navExplore = document.getElementById('nav-explore-link');
+                                const navLearn = document.getElementById('nav-learn-link');
+                                if (navHome) navHome.href = `../home.html?email=${encodeURIComponent(userEmail)}`;
+                                if (navExplore) navExplore.href = `../connection.html?email=${encodeURIComponent(userEmail)}`;
+                                if (navLearn) navLearn.href = `learning/learn.html?email=${encodeURIComponent(userEmail)}`;
+                                // Fetch and display user info in nav
+                                fetch(`/api/profile/get-data?email=${encodeURIComponent(userEmail)}`)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data && data.name) {
+                                            const navUserName = document.getElementById('nav-user-name');
+                                            const navProfileIcon = document.getElementById('nav-profile-icon');
+                                            navUserName.textContent = data.name;
+                                            if (data.profile_pic) {
+                                                navProfileIcon.style.backgroundImage = `url('${data.profile_pic}')`;
+                                                navProfileIcon.style.backgroundSize = 'cover';
+                                            } else {
+                                                const fallbackPic = `https://placehold.co/35x35/6c63ff/FFFFFF?text=${data.name.charAt(0)}${data.name.split(' ')[1] ? data.name.split(' ')[1].charAt(0) : ''}`;
+                                                navProfileIcon.style.backgroundImage = `url('${fallbackPic}')`;
+                                                navProfileIcon.style.backgroundSize = 'cover';
+                                            }
+                                        }
+                                    });
+                        } else {
+                                window.location.href = '/home/authentication/login.html';
+                                return;
+                        }
+                });
+        function createParticles() {
+            const particlesContainer = document.querySelector('.particles-bg');
+            if (!particlesContainer) return;
+            const numParticles = 80;
+            for (let i = 0; i < numParticles; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 2 + 1;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.setProperty('--x-start', `${Math.random() * 100}vw`);
+                particle.style.setProperty('--y-start', `${Math.random() * 100}vh`);
+                particle.style.setProperty('--x-end', `${Math.random() * 100}vw`);
+                particle.style.setProperty('--y-end', `${Math.random() * 100}vh`);
+                particle.style.animationDuration = `${Math.random() * 15 + 15}s`;
+                particle.style.animationDelay = `-${Math.random() * 15}s`;
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // --- Search/Filter Functionality ---
+        function setupMentorSearch() {
+            const searchInput = document.getElementById('skillSearch');
+            const mentorCards = document.querySelectorAll('.mentor-card');
+            const noResultsMessage = document.getElementById('noResults');
+
+            if (!searchInput) return;
+
+            searchInput.addEventListener('keyup', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                let visibleCards = 0;
+
+                mentorCards.forEach(card => {
+                    const skills = card.dataset.skills.toLowerCase();
+                    const name = card.querySelector('.mentor-name').textContent.toLowerCase();
+                    
+                    if (skills.includes(searchTerm) || name.includes(searchTerm)) {
+                        card.style.display = 'flex';
+                        visibleCards++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                // Show or hide the 'no results' message
+                if (visibleCards === 0) {
+                    noResultsMessage.style.display = 'block';
+                } else {
+                    noResultsMessage.style.display = 'none';
+                }
+            });
+        }
+
+        // --- Run scripts on page load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            setupMentorSearch();
+        });
+    </script>
+</body>
+</html>

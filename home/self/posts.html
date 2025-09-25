@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Posts - Talio</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --black: #080808;
+    --white: #F8F8F8;
+    --light-gray: #CCCCCC;
+    --dark-gray: #444444;
+    --translucent-white: rgba(255,255,255,0.05);
+    --translucent-black: rgba(0,0,0,0.05);
+    --primary-accent: #6c63ff;
+}
+.light-theme {
+    --black: #F8F8F8;
+    --white: #080808;
+    --light-gray: #444444;
+    --dark-gray: #CCCCCC;
+    --translucent-white: rgba(0,0,0,0.05);
+    --translucent-black: rgba(255,255,255,0.05);
+    --primary-accent: #6c63ff;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--black);
+    color: var(--white);
+    overflow-x:hidden;
+    transition: background-color 0.5s, color 0.5s;
+    padding-top: 100px;
+}
+.nav-container { position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:1000; width:95%; max-width:1200px; }
+.nav {
+    background: var(--translucent-black);
+    backdrop-filter: blur(10px);
+    border:1px solid var(--dark-gray);
+    border-radius:50px;
+    padding:10px 30px;
+    display:flex; align-items:center; justify-content:space-between;
+}
+.nav:hover { box-shadow:0 0 15px rgba(255,255,255,0.1); }
+.logo { font-family:'Montserrat', sans-serif; font-size:24px; font-weight:700; color:var(--white); }
+.nav-links { display:flex; gap:30px; list-style:none; }
+.nav-links a { color:var(--light-gray); text-decoration:none; font-weight:500; font-size:15px; }
+.nav-links a:hover { color:var(--white); }
+.nav-right { display:flex; align-items:center; gap:20px; }
+.search-box {
+    background: var(--translucent-white);
+    border:1px solid var(--dark-gray);
+    border-radius:20px;
+    padding:8px 15px;
+    color: var(--white);
+    font-size:14px;
+    width:200px;
+    outline:none;
+}
+.search-box::placeholder { color: var(--dark-gray); }
+.search-box:focus { border-color: var(--white); box-shadow:0 0 8px rgba(255,255,255,0.2); }
+.profile-icon {
+    width:35px; height:35px;
+    border-radius:50%;
+    background: var(--dark-gray);
+    border:2px solid var(--dark-gray);
+    cursor:pointer;
+}
+.profile-icon:hover { border-color:var(--white); box-shadow:0 0 10px var(--white); }
+
+.posts-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.section-title { font-size:3rem; font-weight:700; text-align:center; margin-bottom:20px; font-family:'Montserrat'; }
+#posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjusted size here */
+    gap: 20px;
+    align-items: flex-start;
+    max-width: 800px;
+    margin: 0 auto;
+}
+.feed-post-card {
+    background: var(--translucent-black);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--dark-gray);
+    border-radius: 15px;
+    padding: 16px; /* Adjusted padding here */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.feed-post-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+.feed-post-header {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Adjusted gap */
+    margin-bottom: 12px;
+}
+.feed-post-avatar {
+    width: 40px; /* Adjusted size */
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.feed-post-info {
+    flex-grow: 1;
+}
+.feed-post-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem; /* Adjusted font size */
+    font-weight: 600;
+}
+.feed-post-date {
+    font-size: 0.8rem; /* Adjusted font size */
+    color: var(--light-gray);
+}
+.feed-post-content {
+    font-size: 0.9rem; /* Adjusted font size */
+    line-height: 1.5;
+    margin-bottom: 12px;
+    color: var(--white);
+    flex-grow: 1;
+}
+.feed-post-media-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px; /* Adjusted gap */
+    margin-bottom: 12px;
+    justify-content: center;
+}
+.feed-post-image, .feed-post-video {
+    width: 100%;
+    max-height: 150px; /* Adjusted size */
+    object-fit: cover;
+    border-radius: 10px; /* Adjusted border-radius */
+}
+.feed-post-image.single-image {
+    max-height: 200px;
+}
+.feed-post-image.multi-image {
+    width: calc(50% - 4px); /* Adjusted for new gap */
+    max-height: 120px; /* Adjusted size */
+}
+.feed-post-actions {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 12px;
+    border-top: 1px solid var(--dark-gray);
+    margin-top: auto;
+}
+.feed-action-btn {
+    background: none;
+    border: none;
+    color: var(--light-gray);
+    display: flex;
+    align-items: center;
+    gap: 6px; /* Adjusted gap */
+    cursor: pointer;
+    font-size: 13px; /* Adjusted font size */
+    transition: color 0.3s ease;
+}
+.feed-action-btn:hover {
+    color: var(--white);
+}
+.feed-action-btn svg {
+    width: 18px; /* Adjusted icon size */
+    height: 18px;
+}
+.footer {
+    background: var(--translucent-white);
+    backdrop-filter: blur(10px);
+    border-top:1px solid var(--dark-gray);
+    padding:60px 20px 20px; margin-top:100px;
+}
+.footer-content { max-width:1200px; margin:0 auto; }
+.footer-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:40px; margin-bottom:40px; }
+.footer-section h3 { color:var(--white); font-weight:600; margin-bottom:20px; }
+.footer-section ul { list-style:none; }
+.footer-section ul li { margin-bottom:10px; }
+.footer-section ul li a { color:var(--light-gray); text-decoration:none; }
+.footer-section ul li a:hover { color:var(--white); }
+.footer-bottom { border-top:1px solid var(--dark-gray); padding-top:20px; text-align:center; color:var(--dark-gray); }
+
+@media(max-width:768px){
+    .nav-links { display:none; }
+    .search-box { width:150px; }
+    #posts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+<body class="light-theme">
+<div id="notification-bar" style="position:fixed;top:0;right:0;z-index:2000;padding:18px 32px 0 0;">
+    <button id="bell-btn" style="background:none;border:none;cursor:pointer;outline:none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14V11c0-3.07-1.64-5.64-4.5-6.32V4a1.5 1.5 0 00-3 0v.68C5.64 5.36 4 7.92 4 11v3c0 .386-.149.735-.405 1.005L2 17h5m5 0v1a3 3 0 11-6 0v-1m6 0H9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+</div>
+<div class="nav-container">
+    <nav class="nav">
+        <div class="logo">Talio</div>
+        <ul class="nav-links">
+            <li><a id="nav-home-link" href="home.html">Home</a></li>
+            <li><a id="nav-explore-link" href="connection.html">Explore</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#services">Services</a></li>
+        </ul>
+        <div class="nav-right">
+            <input type="text" class="search-box" placeholder="Search...">
+            <div class="profile-icon" id="nav-profile-icon"></div>
+            <span id="nav-user-name" style="margin-left:10px;font-weight:600;"></span>
+        </div>
+    </nav>
+</div>
+
+<div class="posts-container">
+    <h2 class="section-title">All Posts by <span id="user-name-title"></span></h2>
+    <div id="posts-grid"></div>
+</div>
+
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h3>Platform</h3>
+                <ul>
+                    <li><a href="#explore">Explore Quests</a></li>
+                    <li><a href="#skills">Find Skills</a></li>
+                    <li><a href="#teams">Join Guilds</a></li>
+                    <li><a href="#resources">Resources</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Community</h3>
+                <ul>
+                    <li><a href="#guidelines">Community Guidelines</a></li>
+                    <li><a href="#events">Events</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#success">Success Stories</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Support</h3>
+                <ul>
+                    <li><a href="#help">Help Center</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
+                    <li><a href="#feedback">Feedback</a></li>
+                    <li><a href="#status">System Status</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="#about">About Talio</a></li>
+                    <li><a href="#careers">Careers</a></li>
+                    <li><a href="#press">Press</a></li>
+                    <li><a href="#terms">Terms & Privacy</a></li>
+                </ul>
+            </div>
+        </div>
+    <div class="footer-bottom">&copy; 2025 Talio. All rights reserved.</div>
+    </div>
+</footer>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Notification bell navigation
+        var bellBtn = document.getElementById('bell-btn');
+        if (bellBtn) {
+            bellBtn.addEventListener('click', function() {
+                window.location.href = '/home/self/workcollabiratioreq.html';
+            });
+        }
+    });
+</script>
+
+<script type="module">
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const userEmail = urlParams.get('email');
+        const userNameTitle = document.getElementById('user-name-title');
+
+        if (userEmail) {
+            // Fetch user info for the page title and nav bar
+            fetch(`/api/profile/get-data?email=${encodeURIComponent(userEmail)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        window.location.href = '/home/authentication/login.html';
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const navUserName = document.getElementById('nav-user-name');
+                    const navProfileIcon = document.getElementById('nav-profile-icon');
+                    navUserName.textContent = data.name;
+                    userNameTitle.textContent = data.name;
+
+                    if (data.profile_pic) {
+                        navProfileIcon.style.backgroundImage = `url('${data.profile_pic}')`;
+                        navProfileIcon.style.backgroundSize = 'cover';
+                    } else {
+                        const fallbackPic = `https://placehold.co/35x35/6c63ff/FFFFFF?text=${data.name.charAt(0)}${data.name.split(' ')[1] ? data.name.split(' ')[1].charAt(0) : ''}`;
+                        navProfileIcon.style.backgroundImage = `url('${fallbackPic}')`;
+                        navProfileIcon.style.backgroundSize = 'cover';
+                    }
+
+                    // Fetch and show all user's posts
+                    fetch(`/api/posts/get?email=${encodeURIComponent(userEmail)}`)
+                        .then(res => res.json())
+                        .then(posts => {
+                            const postsGrid = document.getElementById('posts-grid');
+                            postsGrid.innerHTML = '';
+                            if (Array.isArray(posts) && posts.length > 0) {
+                                posts.forEach(post => {
+                                    const postDiv = document.createElement('div');
+                                    postDiv.className = 'feed-post-card';
+                                    let mediaHtml = '';
+                                    if (post.video_url) {
+                                        mediaHtml = `<div class='feed-post-media-container'><video class='feed-post-video' controls src='${post.video_url}'></video></div>`;
+                                    } else if (post.images) {
+                                        try {
+                                            const images = JSON.parse(post.images);
+                                            if (Array.isArray(images) && images.length > 0) {
+                                                mediaHtml = `<div class='feed-post-media-container'>` +
+                                                    images.map(url => `<img class='feed-post-image' src='${url}' alt='Post image'>`).join('') +
+                                                    `</div>`;
+                                            }
+                                        } catch (e) { console.error('Error parsing images:', e); }
+                                    }
+                                    postDiv.innerHTML = `
+                                        <div class="feed-post-header">
+                                            <img src="${data.profile_pic}" alt="${data.name}'s profile picture" class="feed-post-avatar">
+                                            <div class="feed-post-info">
+                                                <div class="feed-post-name">${data.name}</div>
+                                                <div class="feed-post-date">${new Date(post.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at ${new Date(post.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}</div>
+                                            </div>
+                                        </div>
+                                        <div class="feed-post-content">${post.content || ''}</div>
+                                        ${mediaHtml}
+                                        <div class="feed-post-actions">
+                                            <button class="feed-action-btn like-btn" data-id="${post.id}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+                                                <span>Like</span>
+                                            </button>
+                                            <button class="feed-action-btn comment-btn" data-id="${post.id}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                                <span>Comment</span>
+                                            </button>
+                                            <button class="feed-action-btn share-btn" data-id="${post.id}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                                                <span>Share</span>
+                                            </button>
+                                        </div>
+                                    `;
+                                    postsGrid.appendChild(postDiv);
+                                });
+                            } else {
+                                postsGrid.innerHTML = '<div class="feed-post-card">No posts yet.</div>';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching posts:', error);
+                        });
+                })
+                .catch(error => {
+                    window.location.href = '/home/authentication/login.html';
+                });
+        } else {
+            window.location.href = '/home/authentication/login.html';
+        }
+    });
+</script>
+</body>
+</html>

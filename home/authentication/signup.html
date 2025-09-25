@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - Skill Exchange Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #f8f8f8;
+    }
+
+    .container {
+      display: flex;
+      width: 100%;
+      max-width: 1000px;
+      height: 600px;
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .form-section {
+      flex: 1;
+      padding: 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .form-section h2 {
+      font-size: 26px;
+      margin-bottom: 10px;
+      color: #111;
+    }
+
+    .form-section p {
+      margin-bottom: 25px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .google-btn {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      background: #fff;
+      transition: 0.2s;
+    }
+
+    .google-btn:hover {
+      background: #f5f5f5;
+    }
+
+    .form-section input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .form-section label {
+      font-size: 13px;
+      color: #444;
+    }
+
+    .checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: #444;
+    }
+
+    .form-section button {
+      width: 100%;
+      padding: 12px;
+      background: #111;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .form-section button:hover {
+      background: #333;
+    }
+
+    .form-section .login-link {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 13px;
+    }
+
+    .form-section .login-link a {
+      color: #111;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .image-section {
+      flex: 1;
+      background: url("https://images.unsplash.com/photo-1521737604893-d14cc237f11d") center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 40px;
+      color: #fff;
+      position: relative;
+    }
+
+    .image-section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+    }
+
+    .image-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .image-content h3 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .image-content p {
+      font-size: 14px;
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    .badges {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 6px 14px;
+      border: 1px solid #fff;
+      border-radius: 20px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="form-section">
+      <h2>Create your account</h2>
+      <p>Join the Skill Exchange Hub and start sharing & learning skills today!</p>
+
+      <div class="google-btn">
+        <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" width="18">
+        Sign up with Google
+      </div>
+
+      <p style="text-align: center; font-size: 13px; margin: 10px 0; color: #888;">or</p>
+
+      <input type="text" placeholder="Name">
+      <input type="email" placeholder="Email">
+      <input type="password" placeholder="Password">
+
+      <div class="checkbox">
+        <input type="checkbox" id="terms">
+        <label for="terms">I agree to the Terms & Privacy Policy</label>
+      </div>
+
+      <button>Sign Up</button>
+
+      <p class="login-link">Already have an account? <a href="login.html">Log in</a></p>
+    </div>
+
+    <div class="image-section">
+      <div class="image-content">
+        <h3>Discover, Share & Learn</h3>
+        <p>Connect with peers, exchange skills, and grow your talents through our skill-sharing community.</p>
+        <div class="badges">
+          <div class="badge">🌍 Connect Globally</div>
+          <div class="badge">🤝 Peer Learning</div>
+          <div class="badge">💡 Skill Growth</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelector('button').addEventListener('click', async (event) => {
+      event.preventDefault();
+      const name = document.querySelector('input[type="text"]').value;
+      const email = document.querySelector('input[type="email"]').value;
+      const password = document.querySelector('input[type="password"]').value;
+
+      try {
+        const response = await fetch('/api/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name, email, password }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert(data.message + ' You can now log in.');
+          window.location.href = 'login.html';
+        } else {
+          alert('Signup failed: ' + data.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred during signup.');
+      }
+    });
+  </script>
+</body>
+</html>

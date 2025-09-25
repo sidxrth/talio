@@ -1,0 +1,272 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Talio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #f8f8f8;
+    }
+
+    .container {
+      display: flex;
+      width: 100%;
+      max-width: 1200px;
+      height: 700px;
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 25px rgba(0,0,0,0.15);
+    }
+
+    /* Left side form */
+    .form-section {
+      flex: 1;
+      padding: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .form-section h2 {
+      font-size: 28px;
+      margin-bottom: 12px;
+      color: #111;
+    }
+
+    .form-section p {
+      margin-bottom: 28px;
+      font-size: 15px;
+      color: #666;
+    }
+
+    .google-btn {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      cursor: pointer;
+      margin-bottom: 22px;
+      background: #fff;
+      transition: 0.2s;
+    }
+
+    .google-btn:hover {
+      background: #f5f5f5;
+    }
+
+    .form-section input {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 18px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    .options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+      font-size: 14px;
+      color: #444;
+    }
+
+    .options a {
+      text-decoration: none;
+      color: #111;
+      font-weight: 500;
+    }
+
+    .form-section button {
+      width: 100%;
+      padding: 14px;
+      background: #111;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .form-section button:hover {
+      background: #333;
+    }
+        
+    .error {
+      color: red;
+      font-size: 14px;
+      margin-top: -10px;
+      margin-bottom: 10px;
+      text-align: center;
+      display: none;
+    }
+
+    .form-section .signup-link {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 14px;
+    }
+
+    .form-section .signup-link a {
+      color: #111;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    /* Right side image */
+    .image-section {
+      flex: 1;
+      background: url("https://images.unsplash.com/photo-1504384308090-c894fdcc538d") center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 50px;
+      color: #fff;
+      position: relative;
+    }
+
+    .image-section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+    }
+
+    .image-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .image-content h3 {
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+
+    .image-content p {
+      font-size: 15px;
+      margin-bottom: 22px;
+      line-height: 1.5;
+    }
+
+    .badges {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 8px 16px;
+      border: 1px solid #fff;
+      border-radius: 20px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="form-section">
+      <h2>Welcome back</h2>
+      <p>Login to continue your skill exchange journey.</p>
+
+      <div class="google-btn">
+        <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" width="18"> 
+        Sign in with Google
+      </div>
+
+      <p style="text-align: center; font-size: 13px; margin: 10px 0; color: #888;">or</p>
+            
+      <form id="loginForm">
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+
+        <div class="options">
+          <label><input type="checkbox"> Remember me</label>
+          <a href="#">Forgot password?</a>
+        </div>
+
+        <button type="submit">Sign In</button>
+      </form>
+            
+      <p class="error" id="errorMsg"></p>
+
+      <p class="signup-link">Don’t have an account? <a href="signup.html">Sign up</a></p>
+    </div>
+
+    <div class="image-section">
+      <div class="image-content">
+        <h3>Collaborate & Grow</h3>
+        <p>Join forces with peers, find mentors, and unlock your true potential in our learning hub.</p>
+        <div class="badges">
+          <div class="badge">🚀 Skill Boost</div>
+          <div class="badge">🤝 Mentorship</div>
+          <div class="badge">🎯 Growth Journey</div>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const errorMsg = document.getElementById('errorMsg');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      errorMsg.style.display = 'none';
+
+      if (!email || !password) {
+        errorMsg.textContent = 'Please enter both email and password.';
+        errorMsg.style.display = 'block';
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await response.json();
+        if (response.ok) {
+          if (data.token) {
+            localStorage.setItem('token', data.token);
+          }
+          window.location.href = data.redirectUrl;
+        } else {
+          errorMsg.textContent = data.message || 'Login failed';
+          errorMsg.style.display = 'block';
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        errorMsg.textContent = 'Server error. Please try again.';
+        errorMsg.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

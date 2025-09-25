@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Projects</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #080808;
+            --white: #F8F8F8;
+            --light-gray: #CCCCCC;
+            --dark-gray: #444444;
+            --translucent-white: rgba(255, 255, 255, 0.05);
+            --translucent-black: rgba(0, 0, 0, 0.05);
+        }
+
+        .light-theme {
+            --black: #F8F8F8;
+            --white: #080808;
+            --light-gray: #444444;
+            --dark-gray: #CCCCCC;
+            --translucent-white: rgba(0, 0, 0, 0.05);
+            --translucent-black: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--black);
+            color: var(--white);
+            overflow-x: hidden;
+            position: relative;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* --- Updated Navigation Container for fixed position --- */
+        .nav-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 95%;
+            max-width: 1200px;
+        }
+
+        /* --- Reused Navigation from connection.html --- */
+        .nav {
+            background: var(--translucent-black);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--dark-gray);
+            border-radius: 50px;
+            padding: 10px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .nav:hover {
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--light-gray);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--white);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-box {
+            background: var(--translucent-white);
+            border: 1px solid var(--dark-gray);
+            border-radius: 20px;
+            padding: 8px 15px;
+            color: var(--white);
+            font-size: 14px;
+            width: 200px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-box::placeholder {
+            color: var(--dark-gray);
+        }
+
+        .search-box:focus {
+            border-color: var(--white);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+        }
+
+        .profile-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--dark-gray);
+            border: 2px solid var(--dark-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .profile-icon:hover {
+            border-color: var(--white);
+            box-shadow: 0 0 10px var(--white);
+        }
+
+        /* --- Page Header Section --- */
+        .page-header {
+            padding: 150px 20px 60px 20px;
+            position: relative;
+            overflow: hidden;
+            background: transparent;
+        }
+
+        .page-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--white);
+        }
+        
+        /* --- Filters and Button Container --- */
+        .projects-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .project-filters {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .project-filter-tab {
+            background: var(--translucent-black);
+            border: 1px solid var(--dark-gray);
+            border-radius: 30px;
+            padding: 12px 24px;
+            color: var(--light-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .project-filter-tab:hover {
+            border-color: var(--white);
+            color: var(--white);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+        
+        .project-filter-tab.active {
+            background: var(--white);
+            color: var(--black);
+            border-color: var(--white);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        /* --- Animated "Create Team" button from connection.html --- */
+        .create-team-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 45px;
+            height: 45px;
+            background: #4A90E2;
+            border: none;
+            border-radius: 12px;
+            color: var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            text-decoration: none;
+            flex-shrink: 0; /* Prevents it from shrinking on smaller screens */
+        }
+        
+        .create-team-btn .icon {
+            transition: opacity 0.3s ease;
+            width: 20px;
+            height: 20px;
+            opacity: 1;
+        }
+        
+        .create-team-btn .btn-text {
+            color: var(--white);
+            font-weight: 600;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            position: absolute;
+            white-space: nowrap;
+            transform: scale(0.8);
+        }
+        
+        .create-team-btn:hover {
+            width: 180px;
+            background: #3A7AB9;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .create-team-btn:hover .icon {
+            opacity: 0;
+        }
+        
+        .create-team-btn:hover .btn-text {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .main-content {
+            padding: 40px 20px 20px 20px;
+            flex-grow: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+        
+        .project-card {
+            background: var(--translucent-white);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid var(--dark-gray);
+            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(255, 255, 255, 0.1), inset 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .project-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .project-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--dark-gray);
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .project-info h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 4px;
+        }
+
+        .project-info p {
+            color: var(--light-gray);
+            font-size: 14px;
+        }
+
+        .project-description {
+            color: var(--light-gray);
+            line-height: 1.6;
+            margin-bottom: 24px;
+            font-size: 15px;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .tech-tag {
+            background: var(--dark-gray);
+            border: 1px solid var(--dark-gray);
+            border-radius: 16px;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--white);
+        }
+
+        .project-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .project-footer .status {
+            font-weight: 600;
+            color: #10b981;
+        }
+
+        .project-footer .view-btn {
+            background: var(--white);
+            color: var(--black);
+            border: none;
+            border-radius: 12px;
+            padding: 10px 20px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .project-footer .view-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(255, 255, 255, 0.1);
+        }
+        
+        .no-projects-message {
+            text-align: center;
+            padding: 40px;
+            color: var(--light-gray);
+            font-size: 1.2rem;
+            grid-column: 1 / -1; /* Make the message span all columns */
+        }
+
+        /* --- Footer Styles --- */
+        .footer {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--dark-gray);
+            padding: 60px 20px 20px;
+            margin-top: 100px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            color: var(--white);
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: var(--light-gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--white);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--dark-gray);
+            padding-top: 20px;
+            text-align: center;
+            color: var(--dark-gray);
+        }
+        
+        /* --- Mobile Responsive --- */
+        @media (max-width: 768px) {
+            .nav {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .page-title {
+                font-size: 36px;
+            }
+
+            .projects-controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .project-filters {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .project-filter-tab {
+                padding: 10px 18px;
+                font-size: 14px;
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .project-card {
+                padding: 20px;
+            }
+
+            .create-team-btn {
+                width: 45px; /* Back to square button on mobile */
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body class="light-theme">
+
+    <div class="nav-container">
+        <nav class="nav">
+            <div class="logo">Talio</div>
+            <ul class="nav-links">
+                <li><a id="nav-home-link" href="../home/home.html">Home</a></li>
+                <li><a id="nav-explore-link" href="connection.html">Explore</a></li>
+                <li><a id="nav-learn-link" href="learning/learn.html">Learn</a></li>
+                <li><a href="#Projects">Projects</a></li>
+            </ul>
+            <div class="nav-right">
+                <input type="text" class="search-box" placeholder="Search...">
+                <div class="profile-icon" id="nav-profile-icon"></div>
+                <span id="nav-user-name" style="margin-left: 10px; font-weight: 600;"></span>
+            </div>
+        </nav>
+    </div>
+
+    <div class="page-header">
+        <div class="page-content">
+            <div class="projects-controls">
+                <h1 class="page-title">My Projects</h1>
+                <a id="createTeamBtn" class="create-team-btn">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+                    </svg>
+                    <span class="btn-text">Create Team</span>
+                </a>
+            </div>
+            <div class="project-filters">
+                <div class="project-filter-tab active" data-filter="all">All</div>
+                <div class="project-filter-tab" data-filter="created">Your Projects</div>
+                <div class="project-filter-tab" data-filter="joined">Projects You Work On</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div class="container">
+            <div class="projects-grid" id="projectsGrid">
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3>Platform</h3>
+                    <ul>
+                        <li><a href="#explore">Explore Quests</a></li>
+                        <li><a href="#skills">Find Skills</a></li>
+                        <li><a href="#teams">Join Guilds</a></li>
+                        <li><a href="#resources">Resources</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Community</h3>
+                    <ul>
+                        <li><a href="#guidelines">Community Guidelines</a></li>
+                        <li><a href="#events">Events</a></li>
+                        <li><a href="#blog">Blog</a></li>
+                        <li><a href="#success">Success Stories</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#help">Help Center</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
+                        <li><a href="#feedback">Feedback</a></li>
+                        <li><a href="#status">System Status</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#about">About Talio</a></li>
+                        <li><a href="#careers">Careers</a></li>
+                        <li><a href="#press">Press Kit</a></li>
+                        <li><a href="#partners">Partners</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Talio. All rights reserved. Built with ❤️ for players, by players.</p>
+            </div>
+        </div>
+    </footer>
+    <script>
+        let allProjects = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userEmail = urlParams.get('email');
+            
+            const createTeamBtn = document.getElementById('createTeamBtn');
+            const projectFilterTabs = document.querySelectorAll('.project-filter-tab');
+            const projectsGrid = document.getElementById('projectsGrid');
+            
+            if (!userEmail) {
+                window.location.href = '/home/authentication/login.html';
+                return;
+            }
+
+            // Update navigation and user info
+            const updateNavAndProfile = async () => {
+                const navHome = document.getElementById('nav-home-link');
+                const navExplore = document.getElementById('nav-explore-link');
+                const navLearn = document.getElementById('nav-learn-link');
+                const navProfileIcon = document.getElementById('nav-profile-icon');
+                const navUserName = document.getElementById('nav-user-name');
+                
+                if (navHome) navHome.href = `/home/home.html?email=${encodeURIComponent(userEmail)}`;
+                if (navExplore) navExplore.href = `/home/connection.html?email=${encodeURIComponent(userEmail)}`;
+                if (navLearn) navLearn.href = `/learning/learn.html?email=${encodeURIComponent(userEmail)}`;
+                if (createTeamBtn) createTeamBtn.href = `/project/createteam.html?email=${encodeURIComponent(userEmail)}`;
+
+                try {
+                    const profileResponse = await fetch(`/api/profile/get-data?email=${encodeURIComponent(userEmail)}`);
+                    if (!profileResponse.ok) {
+                        throw new Error('Profile fetch failed');
+                    }
+                    const data = await profileResponse.json();
+                    if (data && data.name) {
+                        navUserName.textContent = data.name;
+                        const profilePic = data.profile_pic || `https://placehold.co/35x35/6c63ff/FFFFFF?text=${data.name.charAt(0)}${data.name.split(' ')[1] ? data.name.split(' ')[1].charAt(0) : ''}`;
+                        navProfileIcon.style.backgroundImage = `url('${profilePic}')`;
+                        navProfileIcon.style.backgroundSize = 'cover';
+                    }
+                } catch (error) {
+                    console.error('Failed to fetch user profile:', error);
+                    window.location.href = '/home/authentication/login.html';
+                }
+            };
+            
+            // Function to render a single project card
+            const createProjectCard = (project) => {
+                const card = document.createElement('div');
+                card.className = 'project-card';
+                card.setAttribute('data-project-type', project.type);
+                
+                // Parse JSON data safely
+                const tags = project.project_tags ? JSON.parse(project.project_tags) : [];
+                const roleDescription = project.type === 'created' ? 'You are the team lead' : 'Team member';
+                
+                card.innerHTML = `
+                    <div class="project-header">
+                        <div class="project-icon"></div>
+                        <div class="project-info">
+                            <h3>${project.project_name}</h3>
+                            <p>${roleDescription}</p>
+                        </div>
+                    </div>
+                    <div class="project-description">
+                        ${project.project_description}
+                    </div>
+                    <div class="tech-stack">
+                        ${tags.map(tag => `<span class="tech-tag">${tag}</span>`).join('')}
+                    </div>
+                    <div class="project-footer">
+                        <span class="status">Active</span>
+                        <a href="/project/join.html?email=${encodeURIComponent(userEmail)}&teamId=${project.id}" class="view-btn">View Details</a>
+                    </div>
+                `;
+                return card;
+            };
+
+            // Main function to fetch and display projects
+            const fetchAndRenderProjects = async (filter = 'all') => {
+                projectsGrid.innerHTML = ''; // Clear previous content
+                projectsGrid.innerHTML = '<p class="no-projects-message">Loading projects...</p>';
+
+                try {
+                    const token = localStorage.getItem('token');
+                    if (!token) throw new Error('No authentication token found.');
+                    
+                    const [createdResponse, joinedResponse] = await Promise.all([
+                        fetch(`/api/teams/created?email=${encodeURIComponent(userEmail)}`, { headers: { 'Authorization': `Bearer ${token}` } }),
+                        fetch(`/api/teams/joined?email=${encodeURIComponent(userEmail)}`, { headers: { 'Authorization': `Bearer ${token}` } })
+                    ]);
+
+                    const createdTeams = createdResponse.ok ? await createdResponse.json() : [];
+                    const joinedTeams = joinedResponse.ok ? await joinedResponse.json() : [];
+                    
+                    let allProjects = [];
+
+                    // Add 'created' projects
+                    createdTeams.forEach(team => {
+                        allProjects.push({ ...team, type: 'created' });
+                    });
+
+                    // Add 'joined' projects, ensuring they aren't duplicates of created projects
+                    joinedTeams.forEach(joinedTeam => {
+                        if (!createdTeams.some(createdTeam => createdTeam.id === joinedTeam.id)) {
+                            allProjects.push({ ...joinedTeam, type: 'joined' });
+                        }
+                    });
+
+                    let filteredProjects = allProjects;
+                    if (filter !== 'all') {
+                        filteredProjects = allProjects.filter(p => p.type === filter);
+                    }
+                    
+                    projectsGrid.innerHTML = '';
+                    if (filteredProjects.length > 0) {
+                        filteredProjects.forEach(project => {
+                            const card = createProjectCard(project);
+                            projectsGrid.appendChild(card);
+                        });
+                    } else {
+                        projectsGrid.innerHTML = `<p class="no-projects-message">You have no ${filter} projects yet.</p>`;
+                    }
+                } catch (error) {
+                    console.error('Error fetching projects:', error);
+                    projectsGrid.innerHTML = `<p class="no-projects-message">Failed to load projects. Please try again.</p>`;
+                }
+            };
+
+            // Event listeners for filter tabs
+            projectFilterTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    projectFilterTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    const filterValue = tab.getAttribute('data-filter');
+                    fetchAndRenderProjects(filterValue);
+                });
+            });
+
+            // Initial load
+            updateNavAndProfile();
+            fetchAndRenderProjects('all');
+        });
+    </script>
+</body>
+</html>

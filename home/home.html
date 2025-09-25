@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talio Feed - Connect & Collaborate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Root Variables and Themes (from index.html) --- */
+        :root {
+            --black: #080808;
+            --white: #F8F8F8;
+            --light-gray: #CCCCCC;
+            --dark-gray: #444444;
+            --translucent-white: rgba(255, 255, 255, 0.05);
+            --translucent-black: rgba(0, 0, 0, 0.05);
+            --primary-accent: #6c63ff;
+        }
+        .light-theme {
+            --black: #F8F8F8;
+            --white: #080808;
+            --light-gray: #444444;
+            --dark-gray: #CCCCCC;
+            --translucent-white: rgba(0, 0, 0, 0.05);
+            --translucent-black: rgba(255, 255, 255, 0.05);
+            --primary-accent: #6c63ff;
+        }
+        /* --- Base Styles --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--black);
+            color: var(--white);
+            overflow-x: hidden;
+            position: relative;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            padding-top: 100px;
+        }
+        /* --- Background Particles (from index.html) --- */
+        .particles-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .particle {
+            position: absolute;
+            background-color: var(--dark-gray);
+            border-radius: 50%;
+            opacity: 0;
+            animation: move-particle 20s infinite linear;
+        }
+        @keyframes move-particle {
+            0% { transform: translate(var(--x-start), var(--y-start)); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translate(var(--x-end), var(--y-end)); opacity: 0; }
+        }
+        /* --- Navigation (from index.html) --- */
+        .nav-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 95%;
+            max-width: 1200px;
+        }
+        .nav {
+            background: var(--translucent-black);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--dark-gray);
+            border-radius: 50px;
+            padding: 10px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+        .nav:hover {
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
+        }
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--light-gray);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover {
+            color: var(--white);
+        }
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .search-box {
+            background: var(--translucent-white);
+            border: 1px solid var(--dark-gray);
+            border-radius: 20px;
+            padding: 8px 15px;
+            color: var(--white);
+            font-size: 14px;
+            width: 200px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .search-box::placeholder {
+            color: var(--dark-gray);
+        }
+        .search-box:focus {
+            border-color: var(--white);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+        }
+        .sign-up-btn {
+            background: var(--white);
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            color: var(--black);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .sign-up-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(255, 255, 255, 0.1);
+        }
+        .profile-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--dark-gray);
+            border: 2px solid var(--dark-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .profile-icon:hover {
+            border-color: var(--white);
+            box-shadow: 0 0 10px var(--white);
+        }
+        /* --- Main Layout for Home Feed --- */
+        .home-layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .sidebar {
+            background: var(--translucent-black);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--dark-gray);
+            border-radius: 15px;
+            padding: 20px;
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+        }
+        .sidebar h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--white);
+        }
+        .sidebar ul {
+            list-style: none;
+        }
+        .sidebar ul li {
+            margin-bottom: 10px;
+        }
+        .sidebar ul li a {
+            color: var(--light-gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 14px;
+            display: block;
+            padding: 5px 0;
+            border-radius: 5px;
+        }
+        .sidebar ul li a:hover {
+            color: var(--white);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        /* --- Left Sidebar Specifics --- */
+        .user-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--dark-gray);
+        }
+        .user-card-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--dark-gray);
+            border: 2px solid var(--light-gray);
+            margin-bottom: 10px;
+            object-fit: cover;
+        }
+        .user-card-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 5px;
+        }
+        .user-card-title {
+            font-size: 0.85rem;
+            color: var(--light-gray);
+            text-align: center;
+        }
+        /* --- Create Post Section --- */
+        .create-post {
+            background: var(--translucent-black);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--dark-gray);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .create-post-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .create-post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--dark-gray);
+            border: 1px solid var(--light-gray);
+        }
+        .create-post-input {
+            flex-grow: 1;
+            background: var(--translucent-white);
+            border: 1px solid var(--dark-gray);
+            border-radius: 25px;
+            padding: 10px 15px;
+            color: var(--white);
+            font-size: 14px;
+            outline: none;
+            resize: none;
+            min-height: 40px;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+        .create-post-input::placeholder {
+            color: var(--dark-gray);
+        }
+        .create-post-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .create-post-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .create-post-btn {
+            background: transparent;
+            border: 1px solid var(--dark-gray);
+            border-radius: 20px;
+            padding: 8px 15px;
+            color: var(--light-gray);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .create-post-btn:hover {
+            border-color: var(--white);
+            color: var(--white);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        .post-button {
+            background: var(--primary-accent);
+            border: none;
+            border-radius: 20px;
+            padding: 8px 20px;
+            color: var(--white);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .post-button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        /* --- Post Card Styling --- */
+        #feed-posts-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            align-items: center;
+        }
+        .feed-post-card {
+            background: var(--translucent-black);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--dark-gray);
+            border-radius: 15px;
+            padding: 24px;
+            width: 100%;
+            max-width: 650px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .feed-post-card:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+        .feed-post-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .feed-post-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .feed-post-info {
+            flex-grow: 1;
+        }
+        .feed-post-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .feed-post-date {
+            font-size: 0.85rem;
+            color: var(--light-gray);
+        }
+        .feed-post-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            color: var(--white);
+        }
+        .feed-post-media-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+            justify-content: center;
+        }
+        .feed-post-image, .feed-post-video {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+        .feed-post-image.single-image {
+            max-height: 500px;
+        }
+        .feed-post-image.multi-image {
+            width: calc(50% - 6px);
+            max-height: 250px;
+        }
+        .feed-post-actions {
+            display: flex;
+            justify-content: space-around;
+            padding-top: 16px;
+            border-top: 1px solid var(--dark-gray);
+        }
+        .feed-action-btn {
+            background: none;
+            border: none;
+            color: var(--light-gray);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+        .feed-action-btn:hover {
+            color: var(--white);
+        }
+        .feed-action-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+        /* --- Right Sidebar Specifics --- */
+        .suggestion-card {
+            background: var(--translucent-white);
+            border: 1px solid var(--dark-gray);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .suggestion-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--dark-gray);
+            object-fit: cover;
+        }
+        .suggestion-info {
+            flex-grow: 1;
+        }
+        .suggestion-info h5 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--white);
+        }
+        .suggestion-info p {
+            font-size: 0.75rem;
+            color: var(--light-gray);
+        }
+        .connect-btn {
+            background: var(--primary-accent);
+            border: none;
+            border-radius: 15px;
+            padding: 6px 12px;
+            color: var(--white);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .connect-btn:hover {
+            opacity: 0.9;
+        }
+        /* --- Footer (from index.html) --- */
+        .footer {
+            background: var(--translucent-black);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--dark-gray);
+            padding: 60px 20px 20px;
+            margin-top: 50px;
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        .footer-section h3 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--white);
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .footer-section ul {
+            list-style: none;
+        }
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+        .footer-section ul li a {
+            color: var(--light-gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer-section ul li a:hover {
+            color: var(--white);
+        }
+        .footer-bottom {
+            border-top: 1px solid var(--dark-gray);
+            padding-top: 20px;
+            text-align: center;
+            color: var(--dark-gray);
+        }
+        /* --- Mobile Responsive --- */
+        @media (max-width: 1024px) {
+            .home-layout {
+                grid-template-columns: 1fr 2fr;
+            }
+            .right-sidebar {
+                display: none;
+            }
+        }
+        @media (max-width: 768px) {
+            .nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .nav-links {
+                display: none;
+            }
+            .nav-right {
+                width: 100%;
+                justify-content: center;
+                margin-top: 10px;
+            }
+            .home-layout {
+                grid-template-columns: 1fr;
+                padding: 0 10px;
+            }
+            .left-sidebar {
+                display: none;
+            }
+            .sidebar {
+                position: static;
+                margin-bottom: 20px;
+            }
+            .post-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body class="light-theme">
+    <div class="particles-bg"></div>
+    <div class="nav-container">
+        <nav class="nav">
+            <div class="logo">Talio</div>
+            <ul class="nav-links">
+                <li><a id="nav-home-link" href="#home">Home</a></li>
+                <li><a id="nav-explore-link" href="connection.html">Explore</a></li>
+                <li><a id="nav-learn-link" href="../home/learning/learn.html">Learn</a></li>
+                <li><a href="#Projects">Projects</a></li>
+            </ul>
+            <div class="nav-right">
+                <input type="text" class="search-box" placeholder="Search...">
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var searchBox = document.querySelector('.search-box');
+                        if (searchBox) {
+                            searchBox.addEventListener('focus', function() {
+                                window.location.href = '/home/others/search.html';
+                            });
+                        }
+                    });
+                </script>
+                <div class="profile-icon" id="nav-profile-icon"></div>
+            </div>
+        </nav>
+    </div>
+    <div class="home-layout">
+        <aside class="left-sidebar sidebar">
+            <div class="user-card">
+                <img id="user-avatar" src="https://placehold.co/70x70/6c63ff/FFFFFF?text=AS" alt="User Avatar" class="user-card-avatar">
+                <h4 id="user-name" class="user-card-name"></h4>
+                <p id="user-title" class="user-card-title"></p>
+            </div>
+            <h3>Your Hub</h3>
+            <ul>
+                <li><a id="profile-link" href="self/profile.html">My Profile</a></li>
+                <li><a href="profile.html">My Posts</a></li>
+                <li><a href="#">Saved Projects</a></li>
+                <li><a href="#">Messages</a></li>
+                <li><a href="#">Notifications</a></li>
+            </ul>
+        </aside>
+        <main class="main-feed">
+            <div class="create-post">
+                <form id="create-post-form" enctype="multipart/form-data">
+                  <div class="create-post-header">
+                      <div class="create-post-avatar" id="create-post-avatar"></div>
+                      <textarea class="create-post-input" name="content" placeholder="Share your ideas, projects, or progress..." required></textarea>
+                  </div>
+                  <div class="create-post-actions">
+                      <div class="create-post-buttons">
+                          <label class="create-post-btn" style="cursor:pointer;">
+                              🖼️ Photo
+                              <input type="file" name="images" id="post-images-input" accept="image/*" multiple style="display:none;">
+                          </label>
+                          <button class="create-post-btn" type="button">💡 Idea</button>
+                          <button class="create-post-btn" type="button">🔗 Link</button>
+                      </div>
+                      <button class="post-button" type="submit">Post</button>
+                  </div>
+                  <div id="image-preview-container" style="display:flex;gap:8px;margin-top:8px;"></div>
+                </form>
+            </div>
+            <section class="section">
+                <h2 class="section-title"></h2>
+                <div id="feed-posts-grid"></div>
+            </section>
+        </main>
+        <aside class="right-sidebar sidebar">
+            <h3>People You May Know</h3>
+            <div class="suggestion-card">
+                <img src="https://placehold.co/45x45/ADD8E6/FFFFFF?text=JM" alt="John Miller" class="suggestion-avatar">
+                <div class="suggestion-info">
+                    <h5>John Miller</h5>
+                    <p>Data Scientist, NYU</p>
+                </div>
+                <button class="connect-btn">Connect</button>
+            </div>
+            <div class="suggestion-card">
+                <img src="https://placehold.co/45x45/90EE90/FFFFFF?text=LK" alt="Lena Kim" class="suggestion-avatar">
+                <div class="suggestion-info">
+                    <h5>Lena Kim</h5>
+                    <p>Software Engineer, UIUC</p>
+                </div>
+                <button class="connect-btn">Connect</button>
+            </div>
+            <div class="suggestion-card">
+                <img src="https://placehold.co/45x45/FFB6C1/FFFFFF?text=RP" alt="Raj Patel" class="suggestion-avatar">
+                <div class="suggestion-info">
+                    <h5>Raj Patel</h5>
+                    <p>Marketing Specialist, Wharton</p>
+                </div>
+                <button class="connect-btn">Connect</button>
+            </div>
+            <h3 style="margin-top: 30px;">Trending Topics</h3>
+            <ul>
+                <li><a href="#">#AIEthics</a></li>
+                <li><a href="#">#Web3Innovation</a></li>
+                <li><a href="#">#SustainableTech</a></li>
+                <li><a href="#">#FrontendFrameworks</a></li>
+            </ul>
+        </aside>
+    </div>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3>Platform</h3>
+                    <ul>
+                        <li><a href="#explore">Explore Quests</a></li>
+                        <li><a href="#skills">Find Skills</a></li>
+                        <li><a href="#teams">Join Guilds</a></li>
+                        <li><a href="#resources">Resources</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Community</h3>
+                    <ul>
+                        <li><a href="#guidelines">Community Guidelines</a></li>
+                        <li><a href="#events">Events</a></li>
+                        <li><a href="#blog">Blog</a></li>
+                        <li><a href="#success">Success Stories</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#help">Help Center</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
+                        <li><a href="#feedback">Feedback</a></li>
+                        <li><a href="#status">System Status</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#about">About Talio</a></li>
+                        <li><a href="#careers">Careers</a></li>
+                        <li><a href="#press">Press Kit</a></li>
+                        <li><a href="#partners">Partners</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Talio. All rights reserved. Built with &hearts; for players, by players.</p>
+            </div>
+        </div>
+    </footer>
+    <script>
+        // --- Updated JavaScript to Fetch User Data and Propagate Session ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get user email from URL param
+            const urlParams = new URLSearchParams(window.location.search);
+            const userEmail = urlParams.get('email');
+            // Propagate email param in navigation links if authenticated
+            if (userEmail) {
+                // Update nav links to include email param
+                const navHome = document.getElementById('nav-home-link');
+                const navExplore = document.getElementById('nav-explore-link');
+                const navLearn = document.getElementById('nav-learn-link');
+                if (navHome) navHome.href = `home.html?email=${encodeURIComponent(userEmail)}`;
+                if (navExplore) navExplore.href = `connection.html?email=${encodeURIComponent(userEmail)}`;
+                if (navLearn) navLearn.href = `learning/learn.html?email=${encodeURIComponent(userEmail)}`;
+                // Update the "My Profile" link to include the user's email
+                const profileLink = document.getElementById('profile-link');
+                if (profileLink) {
+                    profileLink.href = `self/profile.html?email=${encodeURIComponent(userEmail)}`;
+                }
+                fetch(`/api/profile/get-data?email=${encodeURIComponent(userEmail)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            window.location.href = '/home/authentication/login.html';
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.name) {
+                            const userNameEl = document.getElementById('user-name');
+                            const userTitleEl = document.getElementById('user-title');
+                            const userAvatarEl = document.getElementById('user-avatar');
+                            const createPostAvatarEl = document.getElementById('create-post-avatar');
+                            const navProfileIconEl = document.getElementById('nav-profile-icon');
+                            userNameEl.textContent = data.name;
+                            if (data.education && data.education.length > 0) {
+                                const latestEducation = data.education[data.education.length - 1];
+                                userTitleEl.textContent = `${latestEducation.course} at ${latestEducation.institution}`;
+                            } else {
+                                userTitleEl.textContent = '';
+                            }
+                            if (data.profile_pic) {
+                                userAvatarEl.src = data.profile_pic;
+                                navProfileIconEl.style.backgroundImage = `url('${data.profile_pic}')`;
+                                navProfileIconEl.style.backgroundSize = 'cover';
+                                if (createPostAvatarEl) createPostAvatarEl.style.backgroundImage = `url('${data.profile_pic}')`;
+                                if (createPostAvatarEl) createPostAvatarEl.style.backgroundSize = 'cover';
+                            } else {
+                                const fallbackPic = `https://placehold.co/70x70/6c63ff/FFFFFF?text=${data.name.charAt(0)}${data.name.split(' ')[1] ? data.name.split(' ')[1].charAt(0) : ''}`;
+                                userAvatarEl.src = fallbackPic;
+                                navProfileIconEl.style.backgroundImage = `url('${fallbackPic}')`;
+                                navProfileIconEl.style.backgroundSize = 'cover';
+                                if (createPostAvatarEl) createPostAvatarEl.style.backgroundImage = `url('${fallbackPic}')`;
+                                if (createPostAvatarEl) createPostAvatarEl.style.backgroundSize = 'cover';
+                            }
+                        } else {
+                            window.location.href = '/home/authentication/login.html';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Failed to fetch user data:', error);
+                        window.location.href = '/home/authentication/login.html';
+                    });
+            } else {
+                // Try to get email from token if available (optional, fallback)
+                // If not present, redirect to login
+                console.error('Error: No user email provided in the URL.');
+                window.location.href = '/home/authentication/login.html';
+            }
+        });
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('light-theme');
+            body.classList.toggle('dark-theme');
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('light-theme');
+        });
+        function createParticles() {
+            const particlesContainer = document.querySelector('.particles-bg');
+            const numParticles = 80;
+            for (let i = 0; i < numParticles; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 2 + 1;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.setProperty('--x-start', `${Math.random() * 100}%`);
+                particle.style.setProperty('--y-start', `${Math.random() * 100}%`);
+                particle.style.setProperty('--x-end', `${(Math.random() - 0.5) * 200}px`);
+                particle.style.setProperty('--y-end', `${(Math.random() - 0.5) * 200}px`);
+                particle.style.animationDuration = `${Math.random() * 15 + 15}s`;
+                particle.style.animationDelay = `-${Math.random() * 15}s`;
+                particlesContainer.appendChild(particle);
+            }
+        }
+        window.addEventListener('load', createParticles);
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('action-btn')) {
+                // ...existing code...
+            } else if (e.target.classList.contains('connect-btn')) {
+                // ...existing code...
+            }
+        });
+
+        // Multiple image preview and post upload
+        document.getElementById('post-images-input')?.addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            const preview = document.getElementById('image-preview-container');
+            preview.innerHTML = '';
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    const img = document.createElement('img');
+                    img.src = ev.target.result;
+                    img.style.width = '60px';
+                    img.style.height = '60px';
+                    img.style.objectFit = 'cover';
+                    img.style.borderRadius = '8px';
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        document.getElementById('create-post-form')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+            // Append all selected images
+            const imagesInput = document.getElementById('post-images-input');
+            if (imagesInput && imagesInput.files.length > 0) {
+                for (let i = 0; i < imagesInput.files.length; i++) {
+                    formData.append('images', imagesInput.files[i]);
+                }
+            }
+            // Optionally add user email if needed
+            const urlParams = new URLSearchParams(window.location.search);
+            const userEmail = urlParams.get('email');
+            if (userEmail) formData.append('email', userEmail);
+            // Send to backend
+            const res = await fetch('/api/posts/create', {
+                method: 'POST',
+                body: formData,
+                headers: { 'Authorization': 'Bearer ' + (localStorage.getItem('token') || '') }
+            });
+            if (res.ok) {
+                alert('Your post has been submitted!');
+                form.reset();
+                document.getElementById('image-preview-container').innerHTML = '';
+                // Optionally reload posts
+                location.reload();
+            } else {
+                alert('Failed to submit post.');
+            }
+        });
+        document.getElementById('upload-post-btn')?.addEventListener('click', function() {
+            window.location.href = 'self/user-page-post.html';
+        });
+        document.querySelector('.create-post')?.addEventListener('click', function(e) {
+            if (!e.target.classList.contains('post-button')) {
+                window.location.href = 'self/user-page-post.html';
+            }
+        });
+        document.addEventListener('input', (e) => {
+            if (e.target.classList.contains('create-post-input')) {
+                e.target.style.height = 'auto';
+                e.target.style.height = (e.target.scrollHeight) + 'px';
+            }
+        });
+    </script>
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('/api/posts/feed', {
+                    headers: { 'Authorization': 'Bearer ' + (localStorage.getItem('token') || '') }
+                })
+                .then(res => res.json())
+                .then(posts => {
+                    const feedGrid = document.getElementById('feed-posts-grid');
+                    feedGrid.innerHTML = '';
+                    if (Array.isArray(posts) && posts.length > 0) {
+                        posts.forEach(post => {
+                            const postDiv = document.createElement('div');
+                            postDiv.className = 'feed-post-card';
+                            let mediaHtml = '';
+                            if (post.video_url) {
+                                mediaHtml = `<div class='feed-post-media-container'><video class='feed-post-video' controls src='${post.video_url}'></video></div>`;
+                            } else if (post.images) {
+                                try {
+                                    const images = JSON.parse(post.images);
+                                    if (Array.isArray(images) && images.length > 0) {
+                                        mediaHtml = `<div class='feed-post-media-container' style="flex-wrap:wrap;gap:8px;">` +
+                                            images.map(url => `<img class='feed-post-image multi-image' src='${url}' alt='Post image' style='max-width:48%;max-height:200px;border-radius:10px;object-fit:cover;'>`).join('') +
+                                            `</div>`;
+                                    }
+                                } catch (e) {
+                                    console.error('Error parsing images:', e);
+                                }
+                            }
+                            fetch(`/api/profile/get-data?email=${encodeURIComponent(post.email)}`, {
+                                    headers: { 'Authorization': 'Bearer ' + (localStorage.getItem('token') || '') }
+                                })
+                                .then(userRes => userRes.json())
+                                .then(userData => {
+                                    const userProfilePic = userData.profile_pic || `https://i.pravatar.cc/150?u=${post.email}`;
+                                    postDiv.innerHTML = `
+                                        <div class="feed-post-header">
+                                            <img src="${userProfilePic}" alt="${userData.name}'s profile picture" class="feed-post-avatar">
+                                            <div class="feed-post-info">
+                                                <div class="feed-post-name">${userData.name}</div>
+                                                <div class="feed-post-date">${new Date(post.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at ${new Date(post.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}</div>
+                                            </div>
+                                        </div>
+                                        <div class="feed-post-content">${post.content || ''}</div>
+                                        ${mediaHtml}
+                                        <div class="feed-post-actions">
+                                            <button class="feed-action-btn like-btn" data-id="${post.id}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+                                                <span>Like</span>
+                                            </button>
+                                            <button class="feed-action-btn comment-btn" data-id="${post.id}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                                <span>Comment</span>
+                                            </button>
+                                            <button class="feed-action-btn share-btn" data-id="${post.id}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                                                <span>Share</span>
+                                            </button>
+                                        </div>
+                                    `;
+                                    feedGrid.appendChild(postDiv);
+                                });
+                        });
+                    } else {
+                        feedGrid.innerHTML = '<div class="feed-post-card">No posts yet.</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching posts:', error);
+                });
+        });
+    </script>
+</body>
+</html>

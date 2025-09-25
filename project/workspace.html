@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Skill Exchange Hub - VS Code Workspace</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #1e1e1e;
+      --bg-secondary: #252526;
+      --bg-tertiary: #2d2d30;
+      --sidebar-bg: #252526;
+      --border-color: #3e3e42;
+      --text-primary: #cccccc;
+      --text-secondary: #969696;
+      --text-accent: #4fc3f7;
+      --hover-bg: #2a2d2e;
+      --active-bg: #37373d;
+      --button-bg: #0e639c;
+      --button-hover: #1177bb;
+      --danger: #f14c4c;
+      --success: #89d185;
+      --warning: #ffcc02;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Top Bar */
+    .top-bar {
+      height: 35px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      font-size: 12px;
+    }
+
+    .app-title {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .window-controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    .window-btn {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .close { background: var(--danger); }
+    .minimize { background: var(--warning); }
+    .maximize { background: var(--success); }
+
+    /* Main Layout */
+    .workspace {
+      display: flex;
+      height: calc(100vh - 35px);
+    }
+
+    /* Activity Bar */
+    .activity-bar {
+      width: 50px;
+      background: var(--bg-tertiary);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 0;
+    }
+
+    .activity-item {
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+    }
+
+    .activity-item:hover,
+    .activity-item.active {
+      background: var(--hover-bg);
+      color: var(--text-primary);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 10px 15px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    .sidebar-actions {
+      display: flex;
+      gap: 5px;
+    }
+
+    .sidebar-btn {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 3px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+    }
+
+    .sidebar-btn:hover {
+      background: var(--hover-bg);
+      color: var(--text-primary);
+    }
+
+    /* File Explorer */
+    .file-explorer {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .folder {
+      user-select: none;
+    }
+
+    .folder-header {
+      padding: 5px 15px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: background-color 0.2s ease;
+    }
+
+    .folder-header:hover {
+      background: var(--hover-bg);
+    }
+
+    .folder-icon {
+      font-size: 12px;
+      transition: transform 0.2s ease;
+    }
+
+    .folder.expanded .folder-icon {
+      transform: rotate(90deg);
+    }
+
+    .file-list {
+      display: none;
+    }
+
+    .folder.expanded .file-list {
+      display: block;
+    }
+
+    .file-item {
+      padding: 5px 30px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: background-color 0.2s ease;
+      position: relative;
+    }
+
+    .file-item:hover {
+      background: var(--hover-bg);
+    }
+
+    .file-item.active {
+      background: var(--active-bg);
+    }
+
+    .file-icon {
+      font-size: 14px;
+    }
+
+    .file-name {
+      flex: 1;
+    }
+
+    .file-actions {
+      display: none;
+      gap: 2px;
+    }
+
+    .file-item:hover .file-actions {
+      display: flex;
+    }
+
+    .file-action {
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 2px;
+      cursor: pointer;
+      font-size: 10px;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+    }
+
+    .file-action:hover {
+      background: var(--hover-bg);
+      color: var(--text-primary);
+    }
+
+    /* Main Editor Area */
+    .editor-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Tab Bar */
+    .tab-bar {
+      height: 35px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      overflow-x: auto;
+    }
+
+    .tab {
+      height: 35px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-right: 1px solid var(--border-color);
+      cursor: pointer;
+      font-size: 13px;
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .tab:hover {
+      background: var(--hover-bg);
+      color: var(--text-primary);
+    }
+
+    .tab.active {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    .tab-close {
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 2px;
+      font-size: 10px;
+      transition: background-color 0.2s ease;
+    }
+
+    .tab-close:hover {
+      background: var(--hover-bg);
+    }
+
+    /* Editor */
+    .editor {
+      flex: 1;
+      background: var(--bg-primary);
+      position: relative;
+    }
+
+    .editor-content {
+      width: 100%;
+      height: 100%;
+      border: none;
+      outline: none;
+      resize: none;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 20px;
+      tab-size: 2;
+    }
+
+    .welcome-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+      color: var(--text-secondary);
+    }
+
+    .welcome-logo {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    .welcome-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--text-primary);
+    }
+
+    .welcome-subtitle {
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+
+    .quick-actions {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .quick-action {
+      padding: 10px 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quick-action:hover {
+      background: var(--hover-bg);
+      border-color: var(--text-accent);
+    }
+
+    /* Context Menu */
+    .context-menu {
+      position: fixed;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 5px;
+      padding: 5px 0;
+      min-width: 180px;
+      z-index: 1000;
+      display: none;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .context-item {
+      padding: 8px 15px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .context-item:hover {
+      background: var(--hover-bg);
+    }
+
+    .context-separator {
+      height: 1px;
+      background: var(--border-color);
+      margin: 5px 0;
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-primary);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-secondary);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+
+    .modal {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+      min-width: 400px;
+      max-width: 500px;
+    }
+
+    .modal-header {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: var(--text-primary);
+    }
+
+    .modal-input {
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      color: var(--text-primary);
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    .modal-input:focus {
+      outline: none;
+      border-color: var(--text-accent);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--button-bg);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--button-hover);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: var(--hover-bg);
+    }
+
+    /* File Input */
+    .file-input {
+      display: none;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 200px;
+      }
+      
+      .activity-bar {
+        width: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="app-title">Skill Exchange Hub - Workspace</div>
+    <div class="window-controls">
+      <div class="window-btn minimize"></div>
+      <div class="window-btn maximize"></div>
+      <div class="window-btn close"></div>
+    </div>
+  </div>
+
+  <!-- Main Workspace -->
+  <div class="workspace">
+    <!-- Activity Bar -->
+    <div class="activity-bar">
+      <div class="activity-item active" title="Explorer">📁</div>
+      <div class="activity-item" title="Search">🔍</div>
+      <div class="activity-item" title="Git">🔀</div>
+      <div class="activity-item" title="Extensions">🧩</div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <span>Explorer</span>
+        <div class="sidebar-actions">
+          <div class="sidebar-btn" title="New File" id="new-file-btn">📄</div>
+          <div class="sidebar-btn" title="New Folder" id="new-folder-btn">📁</div>
+          <div class="sidebar-btn" title="Upload Files" id="upload-btn">📤</div>
+          <div class="sidebar-btn" title="Refresh" id="refresh-btn">🔄</div>
+        </div>
+      </div>
+      
+      <div class="file-explorer">
+        <div class="folder expanded" data-folder="root">
+          <div class="folder-header">
+            <span class="folder-icon">▶</span>
+            <span>WORKSPACE</span>
+          </div>
+          <div class="file-list" id="file-list">
+            <!-- Files and folders will be dynamically added here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Editor Area -->
+    <div class="editor-area">
+      <!-- Tab Bar -->
+      <div class="tab-bar" id="tab-bar">
+        <!-- Tabs will be dynamically added here -->
+      </div>
+
+      <!-- Editor -->
+      <div class="editor">
+        <div class="welcome-screen" id="welcome-screen">
+          <div class="welcome-logo">🚀</div>
+          <h1 class="welcome-title">Welcome to Skill Hub Workspace</h1>
+          <p class="welcome-subtitle">Start by creating a new file or uploading existing code</p>
+          <div class="quick-actions">
+            <div class="quick-action" id="quick-new-file">
+              📄 New File
+            </div>
+            <div class="quick-action" id="quick-upload">
+              📤 Upload Files
+            </div>
+            <div class="quick-action" id="quick-new-folder">
+              📁 New Folder
+            </div>
+          </div>
+        </div>
+        <textarea class="editor-content" id="editor-content" style="display: none;" placeholder="Start coding..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Context Menu -->
+  <div class="context-menu" id="context-menu">
+    <div class="context-item" data-action="open">📄 Open</div>
+    <div class="context-item" data-action="rename">✏️ Rename</div>
+    <div class="context-item" data-action="duplicate">📋 Duplicate</div>
+    <div class="context-separator"></div>
+    <div class="context-item" data-action="download">⬇️ Download</div>
+    <div class="context-separator"></div>
+    <div class="context-item" data-action="delete">🗑️ Delete</div>
+  </div>
+
+  <!-- Modal for New File/Folder -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <div class="modal-header" id="modal-header">New File</div>
+      <input type="text" class="modal-input" id="modal-input" placeholder="Enter name...">
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="modal-confirm">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden File Input -->
+  <input type="file" class="file-input" id="file-upload" multiple>
+
+  <script>
+    class VSCodeWorkspace {
+      constructor() {
+        this.files = this.loadFiles();
+        this.activeFile = null;
+        this.tabs = [];
+        this.init();
+      }
+
+      init() {
+        this.bindEvents();
+        this.renderFiles();
+        this.updateTabBar();
+      }
+
+      bindEvents() {
+        // Sidebar actions
+        document.getElementById('new-file-btn').addEventListener('click', () => this.showModal('file'));
+        document.getElementById('new-folder-btn').addEventListener('click', () => this.showModal('folder'));
+        document.getElementById('upload-btn').addEventListener('click', () => document.getElementById('file-upload').click());
+        document.getElementById('refresh-btn').addEventListener('click', () => this.renderFiles());
+
+        // Quick actions
+        document.getElementById('quick-new-file').addEventListener('click', () => this.showModal('file'));
+        document.getElementById('quick-upload').addEventListener('click', () => document.getElementById('file-upload').click());
+        document.getElementById('quick-new-folder').addEventListener('click', () => this.showModal('folder'));
+
+        // File upload
+        document.getElementById('file-upload').addEventListener('change', (e) => this.handleFileUpload(e));
+
+        // Modal actions
+        document.getElementById('modal-cancel').addEventListener('click', () => this.hideModal());
+        document.getElementById('modal-confirm').addEventListener('click', () => this.handleModalConfirm());
+        document.getElementById('modal-overlay').addEventListener('click', (e) => {
+          if (e.target === document.getElementById('modal-overlay')) {
+            this.hideModal();
+          }
+        });
+
+        // Context menu
+        document.addEventListener('click', () => this.hideContextMenu());
+        document.getElementById('context-menu').addEventListener('click', (e) => {
+          const action = e.target.dataset.action;
+          if (action) {
+            this.handleContextAction(action);
+          }
+        });
+
+        // Folder toggle
+        document.addEventListener('click', (e) => {
+          if (e.target.closest('.folder-header')) {
+            const folder = e.target.closest('.folder');
+            folder.classList.toggle('expanded');
+          }
+        });
+
+        // Editor content save
+        document.getElementById('editor-content').addEventListener('input', () => {
+          if (this.activeFile) {
+            this.saveFileContent();
+          }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+          if (e.ctrlKey || e.metaKey) {
+            switch (e.key) {
+              case 's':
+                e.preventDefault();
+                this.saveFileContent();
+                break;
+              case 'n':
+                e.preventDefault();
+                this.showModal('file');
+                break;
+            }
+          }
+        });
+      }
+
+      loadFiles() {
+        const saved = localStorage.getItem('vscode-workspace-files');
+        return saved ? JSON.parse(saved) : {
+          root: {
+            type: 'folder',
+            contents: {}
+          }
+        };
+      }
+
+      saveFiles() {
+        localStorage.setItem('vscode-workspace-files', JSON.stringify(this.files));
+      }
+
+      renderFiles() {
+        const fileList = document.getElementById('file-list');
+        fileList.innerHTML = '';
+        this.renderFolderContents(this.files.root.contents, fileList, 'root');
+      }
+
+      renderFolderContents(contents, parentElement, path) {
+        Object.keys(contents).sort().forEach(name => {
+          const item = contents[name];
+          const fullPath = path === 'root' ? name : `${path}/${name}`;
+
+          if (item.type === 'folder') {
+            const folderElement = document.createElement('div');
+            folderElement.className = 'folder expanded';
+            folderElement.dataset.folder = fullPath;
+            folderElement.innerHTML = `
+              <div class="folder-header">
+                <span class="folder-icon">▶</span>
+                <span>${name}</span>
+              </div>
+              <div class="file-list"></div>
+            `;
+
+            folderElement.querySelector('.folder-header').addEventListener('click', (e) => {
+              e.stopPropagation();
+              folderElement.classList.toggle('expanded');
+            });
+
+            folderElement.addEventListener('contextmenu', (e) => {
+              e.preventDefault();
+              this.showContextMenu(e, fullPath, true);
+            });
+
+            parentElement.appendChild(folderElement);
+            this.renderFolderContents(item.contents, folderElement.querySelector('.file-list'), fullPath);
+          } else {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.innerHTML = `
+              <span class="file-icon">${this.getFileIcon(name)}</span>
+              <span class="file-name">${name}</span>
+              <div class="file-actions">
+                <div class="file-action" title="Download" data-action="download" data-file="${fullPath}">⬇️</div>
+                <div class="file-action" title="Delete" data-action="delete" data-file="${fullPath}">🗑️</div>
+              </div>
+            `;
+
+            fileItem.addEventListener('click', (e) => {
+              if (!e.target.closest('.file-action')) {
+                this.openFile(fullPath);
+              }
+            });
+
+            fileItem.addEventListener('contextmenu', (e) => {
+              e.preventDefault();
+              this.showContextMenu(e, fullPath, false);
+            });
+
+            fileItem.querySelectorAll('.file-action').forEach(action => {
+              action.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const actionType = action.dataset.action;
+                this.handleFileAction(actionType, fullPath);
+              });
+            });
+
+            parentElement.appendChild(fileItem);
+          }
+        });
+      }
+
+      getFileIcon(fileName) {
+        const ext = fileName.split('.').pop().toLowerCase();
+        const icons = {
+          'js': '🟨',
+          'html': '🧡',
+          'css': '🔵',
+          'py': '🐍',
+          'java': '☕',
+          'cpp': '🔷',
+          'c': '🔷',
+          'json': '🟫',
+          'md': '📝',
+          'txt': '📄'
+        };
+        return icons[ext] || '📄';
+      }
+
+      openFile(filePath) {
+        this.activeFile = filePath;
+
+        if (!this.tabs.includes(filePath)) {
+          this.tabs.push(filePath);
+        }
+
+        const editor = document.getElementById('editor-content');
+        const welcomeScreen = document.getElementById('welcome-screen');
+
+        editor.style.display = 'block';
+        welcomeScreen.style.display = 'none';
+
+        const fileContent = this.getFileContent(filePath);
+        editor.value = fileContent || '';
+
+        document.querySelectorAll('.file-item').forEach(item => {
+          item.classList.remove('active');
+          if (item.querySelector('.file-name').textContent === filePath.split('/').pop() &&
+              item.closest('.folder')?.dataset.folder === filePath.split('/').slice(0, -1).join('/')) {
+            item.classList.add('active');
+          }
+        });
+
+        this.updateTabBar();
+      }
+
+      updateTabBar() {
+        const tabBar = document.getElementById('tab-bar');
+        tabBar.innerHTML = '';
+
+        this.tabs.forEach(filePath => {
+          const fileName = filePath.split('/').pop();
+          const tab = document.createElement('div');
+          tab.className = `tab ${filePath === this.activeFile ? 'active' : ''}`;
+          tab.innerHTML = `
+            <span class="file-icon">${this.getFileIcon(fileName)}</span>
+            <span>${fileName}</span>
+            <div class="tab-close" data-file="${filePath}">×</div>
+          `;
+
+          tab.addEventListener('click', (e) => {
+            if (!e.target.classList.contains('tab-close')) {
+              this.openFile(filePath);
+            }
+          });
+
+          tab.querySelector('.tab-close').addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.closeTab(filePath);
+          });
+
+          tabBar.appendChild(tab);
+        });
+      }
+
+      closeTab(filePath) {
+        const index = this.tabs.indexOf(filePath);
+        if (index > -1) {
+          this.tabs.splice(index, 1);
+        }
+
+        if (this.activeFile === filePath) {
+          if (this.tabs.length > 0) {
+            this.openFile(this.tabs[this.tabs.length - 1]);
+          } else {
+            this.activeFile = null;
+            document.getElementById('editor-content').style.display = 'none';
+            document.getElementById('welcome-screen').style.display = 'flex';
+          }
+        }
+
+        this.updateTabBar();
+      }
+
+      saveFileContent() {
+        if (this.activeFile) {
+          const content = document.getElementById('editor-content').value;
+          this.setFileContent(this.activeFile, content);
+          this.saveFiles();
+        }
+      }
+
+      showModal(type) {
+        const modal = document.getElementById('modal-overlay');
+        const header = document.getElementById('modal-header');
+        const input = document.getElementById('modal-input');
+
+        header.textContent = type === 'file' ? 'New File' : 'New Folder';
+        input.placeholder = type === 'file' ? 'file.js' : 'folder-name';
+        input.value = '';
+
+        modal.style.display = 'flex';
+        input.focus();
+        modal.dataset.type = type;
+      }
+
+      hideModal() {
+        document.getElementById('modal-overlay').style.display = 'none';
+      }
+
+      handleModalConfirm() {
+        const input = document.getElementById('modal-input');
+        const type = document.getElementById('modal-overlay').dataset.type;
+        const name = input.value.trim();
+
+        if (name) {
+          if (type === 'file') {
+            this.createFile(name);
+          } else {
+            this.createFolder(name);
+          }
+          this.hideModal();
+        }
+      }
+
+      createFile(name, parentPath = 'root') {
+        const fullPath = parentPath === 'root' ? name : `${parentPath}/${name}`;
+        if (!this.getFile(fullPath)) {
+          this.setFile(fullPath, {
+            content: '',
+            type: 'file',
+            created: new Date().toISOString()
+          });
+          this.saveFiles();
+          this.renderFiles();
+          this.openFile(fullPath);
+        }
+      }
+
+      createFolder(name, parentPath = 'root') {
+        const fullPath = parentPath === 'root' ? name : `${parentPath}/${name}`;
+        if (!this.getFile(fullPath)) {
+          this.setFile(fullPath, {
+            type: 'folder',
+            contents: {}
+          });
+          this.saveFiles();
+          this.renderFiles();
+        }
+      }
+
+      getFile(path) {
+        const parts = path.split('/');
+        let current = this.files.root;
+        for (const part of parts) {
+          if (!current.contents || !current.contents[part]) {
+            return null;
+          }
+          current = current.contents[part];
+        }
+        return current;
+      }
+
+      setFile(path, data) {
+        const parts = path.split('/');
+        const name = parts.pop();
+        let current = this.files.root;
+        for (const part of parts) {
+          if (!current.contents[part]) {
+            current.contents[part] = { type: 'folder', contents: {} };
+          }
+          current = current.contents[part];
+        }
+        current.contents[name] = data;
+      }
+
+      getFileContent(path) {
+        const file = this.getFile(path);
+        return file && file.type === 'file' ? file.content : '';
+      }
+
+      setFileContent(path, content) {
+        const file = this.getFile(path);
+        if (file && file.type === 'file') {
+          file.content = content;
+        }
+      }
+
+      handleFileUpload(e) {
+        const files = Array.from(e.target.files);
+        files.forEach(file => {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            this.createFile(file.name, 'root');
+            this.setFileContent(file.name, event.target.result);
+            this.saveFiles();
+            this.renderFiles();
+          };
+          reader.readAsText(file);
+        });
+        e.target.value = '';
+      }
+
+      handleFileAction(action, filePath) {
+        switch (action) {
+          case 'download':
+            this.downloadFile(filePath);
+            break;
+          case 'delete':
+            this.deleteFile(filePath);
+            break;
+        }
+      }
+
+      downloadFile(filePath) {
+        const file = this.getFile(filePath);
+        if (file && file.type === 'file') {
+          const blob = new Blob([file.content], { type: 'text/plain' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filePath.split('/').pop();
+          a.click();
+          URL.revokeObjectURL(url);
+        }
+      }
+
+      deleteFile(filePath) {
+        if (confirm(`Delete ${filePath}?`)) {
+          const parts = filePath.split('/');
+          const name = parts.pop();
+          let current = this.files.root;
+          for (const part of parts) {
+            if (!current.contents[part]) return;
+            current = current.contents[part];
+          }
+          delete current.contents[name];
+          this.closeTab(filePath);
+          this.saveFiles();
+          this.renderFiles();
+        }
+      }
+
+      showContextMenu(e, filePath, isFolder) {
+        const contextMenu = document.getElementById('context-menu');
+        contextMenu.innerHTML = `
+          ${!isFolder ? '<div class="context-item" data-action="open">📄 Open</div>' : ''}
+          <div class="context-item" data-action="rename">✏️ Rename</div>
+          <div class="context-item" data-action="duplicate">📋 Duplicate</div>
+          <div class="context-separator"></div>
+          ${!isFolder ? '<div class="context-item" data-action="download">⬇️ Download</div>' : ''}
+          <div class="context-separator"></div>
+          <div class="context-item" data-action="delete">🗑️ Delete</div>
+        `;
+        contextMenu.style.display = 'block';
+        contextMenu.style.left = `${e.pageX}px`;
+        contextMenu.style.top = `${e.pageY}px`;
+        contextMenu.dataset.file = filePath;
+      }
+
+      hideContextMenu() {
+        document.getElementById('context-menu').style.display = 'none';
+      }
+
+      handleContextAction(action) {
+        const filePath = document.getElementById('context-menu').dataset.file;
+        if (filePath) {
+          if (action === 'open') {
+            this.openFile(filePath);
+          } else {
+            this.handleFileAction(action, filePath);
+          }
+        }
+        this.hideContextMenu();
+      }
+    }
+
+    // Initialize the workspace
+    const workspace = new VSCodeWorkspace();
+  </script>
+</body>
+</html>

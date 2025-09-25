@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat - Talio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    :root {
+      --primary: #4A90E2;
+      --primary-dark: #357ABD;
+      --bg: #f4f6f9;
+      --text: #2d2d2d;
+      --subtext: #777;
+      --card-bg: #fff;
+      --border: #e0e0e0;
+      --sent: #4A90E2;
+      --received: #e5e7eb;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* Navbar */
+    .nav {
+      width: 100%;
+      max-width: 1200px;
+      background: var(--card-bg);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: fixed;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-family: "Montserrat", sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* Chat container */
+    .chat-container {
+      margin-top: 80px;
+      width: 95%;
+      max-width: 800px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .chat-header img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 12px;
+    }
+    .chat-header span {
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .chat-messages {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .message {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+    }
+    .message.sent {
+      justify-content: flex-end;
+    }
+    .message.received {
+      justify-content: flex-start;
+    }
+
+    .message-content {
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.4;
+      max-width: 70%;
+    }
+    .sent .message-content {
+      background: var(--sent);
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+    .received .message-content {
+      background: var(--received);
+      color: var(--text);
+      border-bottom-left-radius: 4px;
+    }
+    .message-time {
+      font-size: 12px;
+      color: var(--subtext);
+      margin-top: 4px;
+      display: block;
+    }
+
+    /* Input area */
+    .chat-input-area {
+      display: flex;
+      padding: 12px;
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+      align-items: center;
+      gap: 10px;
+    }
+    .chat-input {
+      flex-grow: 1;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: 25px;
+      outline: none;
+      resize: none;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+    .chat-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 4px rgba(74,144,226,0.3);
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      color: var(--subtext);
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.3s;
+    }
+    .icon-btn:hover {
+      color: var(--primary);
+    }
+
+    .chat-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: none;
+      background: var(--primary);
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.3s;
+    }
+    .chat-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    @media (max-width: 600px) {
+      .chat-container { margin-top: 70px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="nav">
+    <div class="logo">Talio</div>
+  </nav>
+
+  <!-- Chat -->
+  <div class="chat-container">
+    <div class="chat-header">
+      <img src="https://i.pravatar.cc/40?u=b" alt="User" />
+      <span>Jane Doe</span>
+    </div>
+    <div class="chat-messages" id="chat-messages">
+      <div class="message received">
+        <div class="message-content">
+          Hi Alex! How's your project coming along?
+          <span class="message-time">10:00 AM</span>
+        </div>
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <button class="icon-btn"><i class="far fa-smile"></i></button>
+      <button class="icon-btn"><i class="fas fa-paperclip"></i></button>
+      <textarea id="chat-input" class="chat-input" placeholder="Type your message..."></textarea>
+      <button id="send-btn" class="chat-btn"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+
+  <script>
+    const chatMessages = document.getElementById("chat-messages");
+    const chatInput = document.getElementById("chat-input");
+    const sendBtn = document.getElementById("send-btn");
+
+    // Function to format time
+    function formatTime() {
+      const now = new Date();
+      return now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    }
+
+    // Function to append a new message
+    function addMessage(text, type = "sent") {
+      if (!text.trim()) return;
+      const msgDiv = document.createElement("div");
+      msgDiv.classList.add("message", type);
+
+      const contentDiv = document.createElement("div");
+      contentDiv.classList.add("message-content");
+      contentDiv.innerHTML = `
+        ${text}
+        <span class="message-time">${formatTime()}</span>
+      `;
+
+      msgDiv.appendChild(contentDiv);
+      chatMessages.appendChild(msgDiv);
+
+      chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll
+    }
+
+    // Send on button click
+    sendBtn.addEventListener("click", () => {
+      addMessage(chatInput.value, "sent");
+      chatInput.value = "";
+    });
+
+    // Send on Enter key
+    chatInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault(); // Prevent newline
+        addMessage(chatInput.value, "sent");
+        chatInput.value = "";
+      }
+    });
+  </script>
+</body>
+</html>
