@@ -71,6 +71,7 @@ body {
 .profile-icon:hover { border-color:var(--white); box-shadow:0 0 10px var(--white); }
 
 .profile-section {
+    position: relative; /* REQUIRED for icon positioning */
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     text-align:center; padding:150px 20px 50px;
 }
@@ -92,9 +93,42 @@ body {
 .stat-value { font-family:'Montserrat'; font-size:1.8rem; font-weight:700; }
 .stat-label { font-size:0.9rem; color:var(--light-gray); white-space:nowrap; }
 
-.edit-profile-btn { background-color:transparent; color:var(--light-gray); border:1px solid var(--dark-gray); padding:10px 20px; border-radius:20px; cursor:pointer; font-weight:600; text-decoration:none; }
-.edit-profile-btn:hover { background-color:var(--translucent-white); border-color:var(--white); color:var(--white); }
-
+/* REMOVED: Old .edit-profile-btn styles */
+.hp-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 15px 0 25px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .hp-label {
+            font-weight: 600;
+            color: var(--light-gray);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        .hp-bar {
+            position: relative;
+            width: 200px;
+            height: 14px;
+            background: var(--translucent-white);
+            border: 1px solid var(--dark-gray);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .hp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff4b4b, #ff7f50);
+            border-radius: 10px 0 0 10px;
+            transition: width 0.4s ease;
+        }
+        .hp-value {
+            font-weight: 600;
+            color: var(--white);
+            font-size: 0.9rem;
+        }
 .section { padding:100px 20px; max-width:1200px; margin:0 auto; }
 .section-title { font-size:3rem; font-weight:700; text-align:center; margin-bottom:20px; font-family:'Montserrat'; }
 
@@ -103,25 +137,6 @@ body {
 .project-card:hover, .skill-item:hover { transform: translateY(-5px); box-shadow:0 15px 30px rgba(255,255,255,0.1), inset 0 0 15px rgba(255,255,255,0.2);}
 .project-title, .skill-name { font-family:'Montserrat'; font-size:1.5rem; font-weight:600; }
 .project-description { color:var(--light-gray); line-height:1.6; margin-top:10px; }
-.project-card-image-container {
-    width: 100%;
-    height: 150px;
-    background: var(--dark-gray);
-    border-radius: 10px;
-    margin-bottom: 15px;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 2rem;
-    color: var(--light-gray);
-}
-.project-card-image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
 
 /* --- Post Card Styling (Profile Page) --- */
 #my-posts-grid {
@@ -224,6 +239,47 @@ body {
     width: 18px;
     height: 18px;
 }
+
+/* CORRECTED ICON BUTTON STYLING AND POSITIONING */
+.edit-icon-container {
+    position: absolute;
+    /* Aligns the icon's vertical center with the profile picture's center. 
+       150px (padding-top) + 75px (half pic height) - 22.5px (half button height) = 202.5px */
+    top: 202.5px; 
+    right: 50%; 
+    /* Moves icon right of the center: (Center) + (Profile pic radius: 75px) + (Gap: 20px) */
+    transform: translateX(calc(50% + 75px + 20px));
+}
+
+.icon-edit-profile-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: var(--primary-accent);
+    color: var(--white);
+    border: 2px solid var(--primary-accent);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: 0 0 10px rgba(108, 99, 255, 0.5);
+}
+
+.icon-edit-profile-btn:hover {
+    background-color: var(--black);
+    color: var(--primary-accent);
+    border-color: var(--primary-accent);
+    transform: scale(1.05);
+}
+
+.icon-edit-profile-btn svg {
+    width: 20px;
+    height: 20px;
+}
+/* END CORRECTED ICON BUTTON STYLING */
+
 .show-more-placeholder {
     display: flex;
     justify-content: center;
@@ -267,6 +323,12 @@ body {
     #my-posts-grid {
         grid-template-columns: 1fr;
     }
+    /* Mobile position adjustment */
+    .edit-icon-container {
+        top: 100px;
+        right: 30px;
+        transform: none;
+    }
 }
 </style>
 </head>
@@ -299,10 +361,17 @@ body {
     <img id="profile-pic" src="https://i.pravatar.cc/150?u=a" alt="Profile Picture" class="profile-pic">
     <h1 id="profile-name" class="profile-name"></h1>
     <p id="profile-bio" class="profile-bio"></p>
+    <div class="hp-container">
+            <span class="hp-label">HP</span>
+            <div class="hp-bar">
+                <div class="hp-fill" style="width: 65%;"></div>
+            </div>
+            <span class="hp-value">65 / 100</span>
+    </div>
     <div class="profile-stats">
         <div class="stat-item level-stat">
             <span class="crown-icon">&#127942;</span>
-            <span id="level-meter" class="stat-value">0</span>
+            <span id="level-meter" class="stat-value" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="10">0</span>
             <span id="position-label" class="stat-label">Beginner</span>
         </div>
         <div class="stat-item">
@@ -314,8 +383,12 @@ body {
             <span class="stat-label">Level</span>
         </div>
     </div>
-    <div class="follow-btn-container">
-        <a id="edit-profile-link" href="edit.html" class="edit-profile-btn">Edit Profile</a>
+    <div class="edit-icon-container">
+        <a id="edit-profile-link" href="edit.html" class="icon-edit-profile-btn" title="Edit Profile">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+            </svg>
+        </a>
     </div>
 </section>
 
@@ -394,10 +467,11 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = '/home/learning/mendor_module.html';
         });
     }
+    // Notification bell navigation
     var bellBtn = document.getElementById('bell-btn');
     if (bellBtn) {
         bellBtn.addEventListener('click', function() {
-            window.location.href = './workcollborationreq.html';
+            window.location.href = '/home/self/workcollabiratioreq.html';
         });
     }
 });
@@ -408,187 +482,158 @@ document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const userEmail = urlParams.get('email');
 
+    // Propagate email param in nav links if authenticated
     if (userEmail) {
         const navHome = document.getElementById('nav-home-link');
         const navExplore = document.getElementById('nav-explore-link');
         if (navHome) navHome.href = `../home.html?email=${encodeURIComponent(userEmail)}`;
         if (navExplore) navExplore.href = `../connection.html?email=${encodeURIComponent(userEmail)}`;
         
-        const fetchUserData = async () => {
-            try {
-                const response = await fetch(`/api/profile/get-data?email=${encodeURIComponent(userEmail)}`);
+        // Fetch and display user info in nav
+        fetch(`/api/profile/get-data?email=${encodeURIComponent(userEmail)}`)
+            .then(response => {
                 if (!response.ok) {
+                    window.location.href = '/home/authentication/login.html';
                     throw new Error('Network response was not ok');
                 }
                 return response.json();
-            } catch (error) {
-                console.error('Failed to fetch user data:', error);
-                window.location.href = '/home/authentication/login.html';
-                return null;
-            }
-        };
-
-        const fetchUserPosts = async () => {
-            try {
-                const response = await fetch(`/api/posts/get?email=${encodeURIComponent(userEmail)}`);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            } catch (error) {
-                console.error('Error fetching posts:', error);
-                return [];
-            }
-        };
-
-        const renderPosts = (posts, profilePic, userName) => {
-            const postsGrid = document.getElementById('my-posts-grid');
-            postsGrid.innerHTML = '';
-            
-            if (Array.isArray(posts) && posts.length > 0) {
-                const postsToShow = posts.slice(0, 4);
-                postsToShow.forEach(post => {
-                    const postDiv = document.createElement('div');
-                    postDiv.className = 'profile-post-card';
-                    let mediaHtml = '';
-                    if (post.video_url) {
-                        mediaHtml = `<div class='feed-post-media-container'><video class='feed-post-video' controls src='${post.video_url}'></video></div>`;
-                    } else if (post.images) {
-                        try {
-                            const images = JSON.parse(post.images);
-                            if (Array.isArray(images) && images.length > 0) {
-                                mediaHtml = `<div class='feed-post-media-container'>` +
-                                    images.map(url => `<img class='feed-post-image' src='${url}' alt='Post image'>`).join('') +
-                                    `</div>`;
-                            }
-                        } catch (e) { console.error('Error parsing images:', e); }
+            })
+            .then(data => {
+                if (data.name) {
+                    // Nav bar user info
+                    const navUserName = document.getElementById('nav-user-name');
+                    const navProfileIcon = document.getElementById('nav-profile-icon');
+                    navUserName.textContent = data.name;
+                    if (data.profile_pic) {
+                        navProfileIcon.style.backgroundImage = `url('${data.profile_pic}')`;
+                        navProfileIcon.style.backgroundSize = 'cover';
+                    } else {
+                        const fallbackPic = `https://placehold.co/35x35/6c63ff/FFFFFF?text=${data.name.charAt(0)}${data.name.split(' ')[1] ? data.name.split(' ')[1].charAt(0) : ''}`;
+                        navProfileIcon.style.backgroundImage = `url('${fallbackPic}')`;
+                        navProfileIcon.style.backgroundSize = 'cover';
                     }
-                    postDiv.innerHTML = `
-                        <div class="feed-post-header">
-                            <img src="${profilePic}" alt="${userName}'s profile picture" class="feed-post-avatar">
-                            <div class="feed-post-info">
-                                <div class="feed-post-name">${userName}</div>
-                                <div class="feed-post-date">${new Date(post.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at ${new Date(post.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}</div>
-                            </div>
-                        </div>
-                        <div class="feed-post-content">${post.content || ''}</div>
-                        ${mediaHtml}
-                        <div class="feed-post-actions">
-                            <button class="feed-action-btn like-btn" data-id="${post.id}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
-                                <span>Like</span>
-                            </button>
-                            <button class="feed-action-btn comment-btn" data-id="${post.id}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                                <span>Comment</span>
-                            </button>
-                            <button class="feed-action-btn share-btn" data-id="${post.id}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                                <span>Share</span>
-                            </button>
-                        </div>
-                    `;
-                    postsGrid.appendChild(postDiv);
-                });
-                if (posts.length > 4) {
-                    const showMoreDiv = document.createElement('a');
-                    showMoreDiv.href = `posts.html?email=${encodeURIComponent(userEmail)}`;
-                    showMoreDiv.className = 'show-more-placeholder';
-                    showMoreDiv.innerHTML = `<span class="show-more-placeholder-icon">+</span>`;
-                    postsGrid.appendChild(showMoreDiv);
+                    // Profile section
+                    document.getElementById('profile-name').textContent = data.name;
+                    document.getElementById('profile-bio').textContent = data.bio || '';
+                    document.getElementById('points-value').textContent = data.points || 0;
+                    document.getElementById('level-value').textContent = data.level || 0;
+                    document.getElementById('position-label').textContent = data.position || 'Beginner';
+                    
+                    const meter = document.getElementById('level-meter');
+                    const levelValue = data.level || 0;
+
+                    meter.textContent = levelValue;
+                    
+                    // Set ARIA value for accessibility
+                    meter.setAttribute('aria-valuenow', levelValue); 
+                    
+                    // Set meter gradient background
+                    meter.style.background = `linear-gradient(90deg, #6c63ff ${(levelValue) * 10}%, #444 ${(levelValue) * 10}%)`;
+
+                    // Education section
+                    const educationGrid = document.getElementById('education-grid');
+                    educationGrid.innerHTML = '';
+                    if (Array.isArray(data.education) && data.education.length > 0) {
+                        data.education.forEach(edu => {
+                            const eduDiv = document.createElement('div');
+                            eduDiv.className = 'skill-item';
+                            eduDiv.innerHTML = `<span class="skill-name">${typeof edu === 'string' ? edu : edu.name}</span>`;
+                            educationGrid.appendChild(eduDiv);
+                        });
+                    } else {
+                        educationGrid.innerHTML = '<div class="skill-item">No education added yet.</div>';
+                    }
+
+                    // Skills section
+                    const skillsGrid = document.getElementById('skills-grid');
+                    skillsGrid.innerHTML = '';
+                    if (Array.isArray(data.skills) && data.skills.length > 0) {
+                        data.skills.forEach(skill => {
+                            const skillDiv = document.createElement('div');
+                            skillDiv.className = 'skill-item';
+                            skillDiv.innerHTML = `<span class="skill-name">${typeof skill === 'string' ? skill : skill.name}</span>`;
+                            skillsGrid.appendChild(skillDiv);
+                        });
+                    } else {
+                        skillsGrid.innerHTML = '<div class="skill-item">No skills added yet.</div>';
+                    }
+                    if (data.profile_pic) {
+                        document.getElementById('profile-pic').src = data.profile_pic;
+                    }
+
+                    // Fetch and show user's posts
+                    fetch(`/api/posts/get?email=${encodeURIComponent(userEmail)}`)
+                        .then(res => res.json())
+                        .then(posts => {
+                            const postsGrid = document.getElementById('my-posts-grid');
+                            postsGrid.innerHTML = '';
+                            
+                            if (Array.isArray(posts) && posts.length > 0) {
+                                const postsToShow = posts.slice(0, 4); // Display up to 4 posts
+                                postsToShow.forEach((post, index) => {
+                                    const postDiv = document.createElement('div');
+                                    postDiv.className = 'profile-post-card';
+                                    let mediaHtml = '';
+                                    if (post.video_url) {
+                                        mediaHtml = `<div class='feed-post-media-container'><video class='feed-post-video' controls src='${post.video_url}'></video></div>`;
+                                    } else if (post.images) {
+                                        try {
+                                            const images = JSON.parse(post.images);
+                                            if (Array.isArray(images) && images.length > 0) {
+                                                mediaHtml = `<div class='feed-post-media-container'>` +
+                                                    images.map(url => `<img class='feed-post-image' src='${url}' alt='Post image'>`).join('') +
+                                                    `</div>`;
+                                            }
+                                        } catch (e) { console.error('Error parsing images:', e); }
+                                    }
+                                    postDiv.innerHTML = `
+                                        <div class="feed-post-header">
+                                            <img src="${data.profile_pic}" alt="${data.name}'s profile picture" class="feed-post-avatar">
+                                            <div class="feed-post-info">
+                                                <div class="feed-post-name">${data.name}</div>
+                                                <div class="feed-post-date">${new Date(post.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at ${new Date(post.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}</div>
+                                            </div>
+                                        </div>
+                                        <div class="feed-post-content">${post.content || ''}</div>
+                                        ${mediaHtml}
+                                        <div class="feed-post-actions">
+                                            <button class="feed-action-btn like-btn" data-id="${post.id}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+                                                <span>Like</span>
+                                            </button>
+                                            <button class="feed-action-btn comment-btn" data-id="${post.id}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                                <span>Comment</span>
+                                            </button>
+                                            <button class="feed-action-btn share-btn" data-id="${post.id}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                                                <span>Share</span>
+                                            </button>
+                                        </div>
+                                    `;
+                                    postsGrid.appendChild(postDiv);
+                                });
+                                if (posts.length > 4) {
+                                    const showMoreDiv = document.createElement('a');
+                                    showMoreDiv.href = `posts.html?email=${encodeURIComponent(userEmail)}`;
+                                    showMoreDiv.className = 'show-more-placeholder';
+                                    showMoreDiv.innerHTML = `<span class="show-more-placeholder-icon">+</span>`;
+                                    postsGrid.appendChild(showMoreDiv);
+                                }
+                            } else {
+                                postsGrid.innerHTML = '<div class="profile-post-card">No posts yet.</div>';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching posts:', error);
+                        });
+                } else {
+                    window.location.href = '/home/authentication/login.html';
                 }
-            } else {
-                postsGrid.innerHTML = '<div class="profile-post-card">No posts yet.</div>';
-            }
-        };
-
-        const renderSkills = (skills) => {
-            const skillsGrid = document.getElementById('skills-grid');
-            skillsGrid.innerHTML = '';
-            if (Array.isArray(skills) && skills.length > 0) {
-                skills.forEach(skill => {
-                    const skillDiv = document.createElement('div');
-                    skillDiv.className = 'skill-item';
-                    skillDiv.innerHTML = `<span class="skill-name">${skill}</span>`;
-                    skillsGrid.appendChild(skillDiv);
-                });
-            } else {
-                skillsGrid.innerHTML = '<div class="skill-item">No skills added yet.</div>';
-            }
-        };
-
-        const renderEducation = (education) => {
-            const educationGrid = document.getElementById('education-grid');
-            educationGrid.innerHTML = '';
-            if (Array.isArray(education) && education.length > 0) {
-                education.forEach(edu => {
-                    const eduDiv = document.createElement('div');
-                    eduDiv.className = 'skill-item';
-                    eduDiv.innerHTML = `<span class="skill-name">${edu.course} at ${edu.institution}</span>`;
-                    educationGrid.appendChild(eduDiv);
-                });
-            } else {
-                educationGrid.innerHTML = '<div class="skill-item">No education added yet.</div>';
-            }
-        };
-        
-        const renderProjects = (projects) => {
-            const projectsGrid = document.getElementById('projects-grid');
-            projectsGrid.innerHTML = '';
-            if (Array.isArray(projects) && projects.length > 0) {
-                projects.forEach(project => {
-                    const projectDiv = document.createElement('div');
-                    projectDiv.className = 'project-card';
-                    const projectTags = project.project_tags ? JSON.parse(project.project_tags) : [];
-                    const isCreator = project.creator_email === userEmail;
-                    const roleText = isCreator ? 'Created by you' : 'Joined';
-                    projectDiv.innerHTML = `
-                        <div class="project-card-image-container">
-                             <img src="https://placehold.co/300x150/6c63ff/FFFFFF?text=${project.project_name.replace(/\s/g, '+')}" alt="Project image">
-                        </div>
-                        <h4 class="project-title">${project.project_name}</h4>
-                        <p class="project-description">${roleText}</p>
-                        <div class="tech-stack">
-                            ${projectTags.map(tag => `<span class="tech-tag">${tag}</span>`).join('')}
-                        </div>
-                    `;
-                    projectsGrid.appendChild(projectDiv);
-                });
-            } else {
-                projectsGrid.innerHTML = '<div>No projects added yet.</div>';
-            }
-        };
-
-        (async () => {
-            const userData = await fetchUserData();
-            if (userData) {
-                const navUserName = document.getElementById('nav-user-name');
-                const navProfileIcon = document.getElementById('nav-profile-icon');
-                navUserName.textContent = userData.name;
-                const profilePic = userData.profile_pic || `https://placehold.co/35x35/6c63ff/FFFFFF?text=${userData.name.charAt(0)}${userData.name.split(' ')[1] ? userData.name.split(' ')[1].charAt(0) : ''}`;
-                navProfileIcon.style.backgroundImage = `url('${profilePic}')`;
-                navProfileIcon.style.backgroundSize = 'cover';
-                
-                document.getElementById('profile-name').textContent = userData.name;
-                document.getElementById('profile-bio').textContent = userData.bio || 'No bio provided yet.';
-                document.getElementById('points-value').textContent = userData.points || 0;
-                document.getElementById('level-value').textContent = userData.level || 0;
-                document.getElementById('position-label').textContent = userData.position || 'Beginner';
-                document.getElementById('profile-pic').src = userData.profile_pic || `https://i.pravatar.cc/150?u=${userData.email}`;
-
-                // Fetch and render projects
-                const projects = await fetchProjects();
-                renderProjects(projects);
-
-                renderEducation(userData.education);
-                renderSkills(userData.skills);
-                
-                const posts = await fetchUserPosts();
-                if (posts) {
-                    renderPosts(posts, profilePic, userData.name);
-                }
-            }
-        })();
+            })
+            .catch(error => {
+                window.location.href = '/home/authentication/login.html';
+            });
     } else {
         window.location.href = '/home/authentication/login.html';
     }

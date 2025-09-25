@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Levels & Badges | Talio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #080808;
+            --white: #F8F8F8;
+            --light-gray: #CCCCCC;
+            --dark-gray: #444444;
+            --translucent-white: rgba(255, 255, 255, 0.05);
+            --translucent-black: rgba(0, 0, 0, 0.05);
+            --primary-accent: #6c63ff;
+            --secondary-accent: #f39c12;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .light-theme {
+            --black: #F8F8F8;
+            --white: #080808;
+            --light-gray: #444444;
+            --dark-gray: #CCCCCC;
+            --translucent-white: rgba(0, 0, 0, 0.05);
+            --translucent-black: rgba(255, 255, 255, 0.05);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            line-height: 1.6;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+        
+        /* --- General Layout --- */
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- Navbar --- */
+        .nav-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 95%;
+            max-width: 1200px;
+        }
+        .nav {
+            background: var(--translucent-black);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--dark-gray);
+            border-radius: 50px;
+            padding: 10px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+        .nav:hover {
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
+        }
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--light-gray);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover {
+            color: var(--white);
+        }
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .search-box {
+            background: var(--translucent-white);
+            border: 1px solid var(--dark-gray);
+            border-radius: 20px;
+            padding: 8px 15px;
+            color: var(--white);
+            font-size: 14px;
+            width: 200px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .search-box::placeholder {
+            color: var(--dark-gray);
+        }
+        .search-box:focus {
+            border-color: var(--white);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+        }
+        .profile-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--dark-gray);
+            border: 2px solid var(--dark-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .profile-icon:hover {
+            border-color: var(--white);
+            box-shadow: 0 0 10px var(--white);
+        }
+        #notification-bar {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            padding: 0;
+            background: none;
+        }
+        .bell-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            outline: none;
+        }
+        .bell-btn svg {
+            width: 32px;
+            height: 32px;
+            color: var(--light-gray);
+            transition: color 0.3s ease;
+        }
+        .bell-btn:hover svg {
+            color: var(--white);
+        }
+
+        /* --- Hero Section --- */
+        .hero-section {
+            padding: 150px 20px 60px 20px;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-section p {
+            font-size: 18px;
+            opacity: 0.9;
+            color: var(--light-gray);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* --- Levels Grid --- */
+        .levels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 0 20px;
+            margin-bottom: 100px;
+        }
+        .level-card {
+            background: var(--translucent-white);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--dark-gray);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 250px;
+        }
+        .level-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(255, 255, 255, 0.1);
+        }
+        .level-number {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--secondary-accent), var(--primary-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .level-card .crown-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            animation: bounce 2s infinite ease-in-out;
+        }
+        .badge-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+        .badge-image {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 1rem;
+            border-radius: 50%;
+            border: 2px solid var(--primary-accent);
+            padding: 5px;
+            background-color: var(--translucent-black);
+        }
+        .xp-required {
+            font-size: 1rem;
+            color: var(--light-gray);
+        }
+        .locked-badge-message {
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+            margin-bottom: 1rem;
+        }
+
+        /* --- Footer --- */
+        .footer {
+            background: var(--translucent-white);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--dark-gray);
+            padding: 60px 20px 20px;
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        .footer-section h3 {
+            color: var(--white);
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .footer-section ul {
+            list-style: none;
+        }
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+        .footer-section ul li a {
+            color: var(--light-gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer-section ul li a:hover {
+            color: var(--white);
+        }
+        .footer-bottom {
+            border-top: 1px solid var(--dark-gray);
+            padding-top: 20px;
+            text-align: center;
+            color: var(--dark-gray);
+        }
+        
+        /* --- Animations --- */
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .levels-grid .level-card {
+            animation: fadeIn 0.5s ease-out backwards;
+        }
+        .levels-grid .level-card:nth-child(1) { animation-delay: 0.1s; }
+        .levels-grid .level-card:nth-child(2) { animation-delay: 0.2s; }
+        .levels-grid .level-card:nth-child(3) { animation-delay: 0.3s; }
+        .levels-grid .level-card:nth-child(4) { animation-delay: 0.4s; }
+        .levels-grid .level-card:nth-child(5) { animation-delay: 0.5s; }
+        .levels-grid .level-card:nth-child(6) { animation-delay: 0.6s; }
+        /* ... add more for other cards ... */
+
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .search-box {
+                width: 150px;
+            }
+            .hero-section h1 {
+                font-size: 36px;
+            }
+            .levels-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="light-theme">
+
+    <div class="nav-container">
+        <nav class="nav">
+            <div class="logo">Talio</div>
+            <ul class="nav-links">
+                <li><a id="nav-home-link" href="#">Home</a></li>
+                <li><a id="nav-explore-link" href="#">Explore</a></li>
+                <li><a href="#">Skills</a></li>
+                <li><a href="#">Services</a></li>
+            </ul>
+            <div class="nav-right">
+                <input type="text" class="search-box" placeholder="Search...">
+                <div class="profile-icon" id="nav-profile-icon"></div>
+                <span id="nav-user-name" style="margin-left: 10px; font-weight: 600;"></span>
+            </div>
+        </nav>
+    </div>
+
+    <div class="hero-section">
+        <h1 style="background: linear-gradient(45deg, var(--primary-accent), var(--secondary-accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Your Path to Mastery</h1>
+        <p>Progress through levels and unlock exclusive badges that showcase your expertise and contributions to the community.</p>
+    </div>
+
+    <div class="levels-grid" id="levels-grid">
+        </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3>Platform</h3>
+                    <ul>
+                        <li><a href="#">Explore Quests</a></li>
+                        <li><a href="#">Find Skills</a></li>
+                        <li><a href="#">Join Guilds</a></li>
+                        <li><a href="#">Resources</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Community</h3>
+                    <ul>
+                        <li><a href="#">Community Guidelines</a></li>
+                        <li><a href="#">Events</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Success Stories</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Feedback</a></li>
+                        <li><a href="#">System Status</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#">About Talio</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press</a></li>
+                        <li><a href="#">Terms & Privacy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">&copy; 2025 Talio. All rights reserved.</div>
+        </div>
+    </footer>
+    
+    <script type="module">
+        import levelsAndBadges from './app_titles.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userEmail = urlParams.get('email');
+            const token = localStorage.getItem('token');
+            
+            // Function to update navigation links with user email
+            const updateNavLinks = (email) => {
+                const navHome = document.getElementById('nav-home-link');
+                const navExplore = document.getElementById('nav-explore-link');
+                if (navHome) navHome.href = `/home/home.html?email=${encodeURIComponent(email)}`;
+                if (navExplore) navExplore.href = `/home/connection.html?email=${encodeURIComponent(email)}`;
+            };
+
+            // Function to fetch user data for the nav bar
+            const fetchUserData = async () => {
+                if (!userEmail || !token) {
+                    return null;
+                }
+                try {
+                    const response = await fetch(`/api/profile/get-data?email=${encodeURIComponent(userEmail)}`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch user profile data.');
+                    }
+                    return response.json();
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                    return null;
+                }
+            };
+
+            // Function to render the levels grid
+            const renderLevels = () => {
+                const levelsGrid = document.getElementById('levels-grid');
+                levelsGrid.innerHTML = '';
+                
+                levelsAndBadges.forEach(levelInfo => {
+                    const card = document.createElement('div');
+                    card.className = 'level-card';
+                    
+                    const badgeImageHtml = levelInfo.badge ? `<img src="https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(levelInfo.badge)}" alt="${levelInfo.badge} badge" class="badge-image">` : '';
+                    const badgeTitleHtml = levelInfo.badge ? `<h4 class="badge-title">${levelInfo.badge}</h4>` : `<p class="locked-badge-message">No Badge for this level</p>`;
+
+                    card.innerHTML = `
+                        <div class="level-number">Level ${levelInfo.level}</div>
+                        ${badgeImageHtml}
+                        ${badgeTitleHtml}
+                        <p class="xp-required">XP Required: ${levelInfo.xpRequired}</p>
+                    `;
+                    levelsGrid.appendChild(card);
+                });
+            };
+
+            // Initial load of content
+            (async () => {
+                if (userEmail && token) {
+                    const userData = await fetchUserData();
+                    if (userData) {
+                        updateNavLinks(userEmail);
+                        const navUserName = document.getElementById('nav-user-name');
+                        const navProfileIcon = document.getElementById('nav-profile-icon');
+                        navUserName.textContent = userData.name;
+                        const profilePic = userData.profile_pic || `https://i.pravatar.cc/35?u=${userData.email}`;
+                        navProfileIcon.style.backgroundImage = `url('${profilePic}')`;
+                        navProfileIcon.style.backgroundSize = 'cover';
+                    } else {
+                        // Redirect to login if user data cannot be fetched
+                        window.location.href = '/home/authentication/login.html';
+                    }
+                } else {
+                    // Redirect to login if no email or token is found
+                    window.location.href = '/home/authentication/login.html';
+                }
+                renderLevels();
+            })();
+        });
+    </script>
+</body>
+</html>
