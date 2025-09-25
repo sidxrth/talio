@@ -944,14 +944,6 @@
                 .catch(error => {
                     console.error('Error fetching posts:', error);
                 });
-
-            // Add event delegation for post section buttons
-            const feedGrid = document.getElementById('feed-posts-grid');
-            feedGrid.addEventListener('click', function(e) {
-                if (e.target.closest('button')) {
-                    window.location.href = 'self/user-page-profile.html';
-                }
-            });
         });
     </script>
 </body>
