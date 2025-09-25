@@ -1,1047 +1,1392 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Skill Exchange Hub - AI & Flutter Team</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --black: #080808;
-      --white: #F8F8F8;
-      --light-gray: #CCCCCC;
-      --dark-gray: #444444;
-      --translucent-white: rgba(255, 255, 255, 0.05);
-      --translucent-black: rgba(0, 0, 0, 0.05);
-    }
-
-    .light-theme {
-      --black: #F8F8F8;
-      --white: #080808;
-      --light-gray: #444444;
-      --dark-gray: #CCCCCC;
-      --translucent-white: rgba(0, 0, 0, 0.05);
-      --translucent-black: rgba(255, 255, 255, 0.05);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      background-color: var(--black);
-      color: var(--white);
-      line-height: 1.6;
-      transition: background-color 0.5s ease, color 0.5s ease;
-    }
-
-    /* Navbar */
-    .navbar {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 95%;
-      max-width: 1200px;
-      background: var(--translucent-black);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--dark-gray);
-      border-radius: 50px;
-      padding: 10px 30px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      z-index: 1000;
-      transition: all 0.3s ease;
-    }
-
-    .navbar:hover {
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-    }
-
-    .navbar .logo {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--white);
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .navbar .nav-links {
-      display: flex;
-      gap: 1rem;
-    }
-
-    .navbar .nav-links a {
-      color: var(--white);
-      text-decoration: none;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 14px;
-      padding: 8px 16px;
-      border-radius: 20px;
-      transition: all 0.3s ease;
-    }
-
-    .navbar .nav-links a:hover {
-      background: var(--white);
-      color: var(--black);
-    }
-
-    .navbar .search {
-      position: relative;
-      flex: 1;
-      max-width: 400px;
-      margin: 0 2rem;
-    }
-
-    .navbar .search input {
-      width: 100%;
-      padding: 8px 15px 8px 2.5rem;
-      background: var(--translucent-white);
-      border: 1px solid var(--dark-gray);
-      border-radius: 20px;
-      color: var(--white);
-      font-size: 14px;
-      outline: none;
-      transition: all 0.3s ease;
-    }
-
-    .navbar .search input::placeholder {
-      color: var(--dark-gray);
-    }
-
-    .navbar .search input:focus {
-      border-color: var(--white);
-      box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
-    }
-
-    .navbar .search::before {
-      content: "🔍";
-      position: absolute;
-      left: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--light-gray);
-    }
-
-    .navbar .profile {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .notification-badge {
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
-      background: var(--dark-gray);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .notification-badge:hover {
-      background: var(--white);
-      color: var(--black);
-    }
-
-    .navbar .profile img {
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--dark-gray);
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .navbar .profile img:hover {
-      border-color: var(--white);
-      box-shadow: 0 0 10px var(--white);
-    }
-
-    /* Main Container */
-    .container {
-      max-width: 1200px;
-      margin: 100px auto 0;
-      padding: 2rem;
-      display: grid;
-      grid-template-columns: 1fr 350px;
-      gap: 2rem;
-    }
-
-    .main-content {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      position: sticky;
-      top: 100px;
-      height: fit-content;
-    }
-
-    /* Cards */
-    .card {
-      background: var(--translucent-white);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--dark-gray);
-      padding: 1.5rem;
-      border-radius: 20px;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 30px rgba(255, 255, 255, 0.1);
-    }
-
-    .card h3 {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--white);
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    /* Welcome Section */
-    .welcome {
-      background: var(--translucent-black);
-      backdrop-filter: blur(10px);
-      color: var(--white);
-      padding: 2rem;
-      border-radius: 20px;
-    }
-
-    .welcome h2 {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
-    .welcome p {
-      font-size: 1.1rem;
-      color: var(--light-gray);
-    }
-
-    /* Stats Grid */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .stat-card {
-      text-align: center;
-      padding: 1.5rem;
-      background: var(--translucent-white);
-      border-radius: 15px;
-      transition: all 0.3s ease;
-    }
-
-    .stat-card:hover {
-      transform: scale(1.05);
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .stat-number {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--white);
-      margin-bottom: 0.5rem;
-    }
-
-    .stat-label {
-      color: var(--light-gray);
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    /* Activity Feed */
-    .activity-item {
-      padding: 1rem 0;
-      border-bottom: 1px solid var(--dark-gray);
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-    }
-
-    .activity-item:last-child {
-      border-bottom: none;
-    }
-
-    .activity-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--dark-gray);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      color: var(--white);
-      flex-shrink: 0;
-    }
-
-    .activity-content {
-      flex: 1;
-    }
-
-    .activity-content strong {
-      color: var(--white);
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    .activity-time {
-      font-size: 0.8rem;
-      color: var(--light-gray);
-      margin-top: 0.25rem;
-    }
-
-    /* Kanban Board */
-    .kanban {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin-top: 1rem;
-    }
-
-    .kanban-column {
-      background: var(--translucent-white);
-      border-radius: 15px;
-      padding: 1rem;
-      min-height: 200px;
-    }
-
-    .kanban-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1rem;
-      padding-bottom: 0.75rem;
-      border-bottom: 1px solid var(--dark-gray);
-    }
-
-    .kanban-title {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 600;
-      color: var(--white);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .task-count {
-      background: var(--white);
-      color: var(--black);
-      border-radius: 12px;
-      padding: 0.25rem 0.5rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
-    .task-card {
-      background: var(--translucent-black);
-      padding: 1rem;
-      border-radius: 8px;
-      margin-bottom: 0.75rem;
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-
-    .task-card:hover {
-      transform: translateY(-2px);
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .task-title {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 500;
-      color: var(--white);
-      margin-bottom: 0.5rem;
-    }
-
-    .task-meta {
-      font-size: 0.8rem;
-      color: var(--light-gray);
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    /* Members List */
-    .member-item {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 0.75rem 0;
-      border-bottom: 1px solid var(--dark-gray);
-    }
-
-    .member-item:last-child {
-      border-bottom: none;
-    }
-
-    .member-avatar {
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--dark-gray);
-      transition: all 0.3s ease;
-    }
-
-    .member-avatar:hover {
-      border-color: var(--white);
-    }
-
-    .member-info h4 {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 600;
-      color: var(--white);
-      margin-bottom: 0.25rem;
-    }
-
-    .member-role {
-      font-size: 0.85rem;
-      color: var(--light-gray);
-    }
-
-    .status-online {
-      width: 10px;
-      height: 10px;
-      background: var(--light-gray);
-      border-radius: 50%;
-      margin-left: auto;
-      border: 2px solid var(--black);
-    }
-
-    /* Resources List */
-    .resource-item {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 0.75rem;
-      border: 1px solid var(--dark-gray);
-      border-radius: 8px;
-      margin-bottom: 0.75rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .resource-item:hover {
-      background: var(--translucent-white);
-      border-color: var(--white);
-    }
-
-    .resource-icon {
-      width: 40px;
-      height: 40px;
-      background: var(--dark-gray);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      color: var(--white);
-    }
-
-    .resource-info h4 {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 500;
-      color: var(--white);
-      margin-bottom: 0.25rem;
-    }
-
-    .resource-meta {
-      font-size: 0.8rem;
-      color: var(--light-gray);
-    }
-
-    /* Chat Messages */
-    .chat-messages {
-      max-height: 300px;
-      overflow-y: auto;
-      margin-bottom: 1rem;
-    }
-
-    .message {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.75rem;
-      margin-bottom: 1rem;
-    }
-
-    .message-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      object-fit: cover;
-      flex-shrink: 0;
-    }
-
-    .message-content {
-      flex: 1;
-    }
-
-    .message-header {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.25rem;
-    }
-
-    .message-author {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 600;
-      color: var(--white);
-      font-size: 0.9rem;
-    }
-
-    .message-time {
-      font-size: 0.75rem;
-      color: var(--light-gray);
-    }
-
-    .message-text {
-      font-size: 0.9rem;
-      color: var(--light-gray);
-    }
-
-    .chat-input {
-      display: flex;
-      gap: 0.75rem;
-    }
-
-    .chat-input input {
-      flex: 1;
-      padding: 0.75rem;
-      background: var(--translucent-white);
-      border: 1px solid var(--dark-gray);
-      border-radius: 20px;
-      color: var(--white);
-      outline: none;
-      transition: all 0.3s ease;
-    }
-
-    .chat-input input:focus {
-      border-color: var(--white);
-      background: var(--translucent-black);
-    }
-
-    .chat-input button {
-      padding: 0.75rem 1.5rem;
-      background: var(--white);
-      color: var(--black);
-      border: none;
-      border-radius: 20px;
-      cursor: pointer;
-      font-weight: 600;
-      font-family: 'Montserrat', sans-serif;
-      transition: all 0.3s ease;
-    }
-
-    .chat-input button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 15px rgba(255, 255, 255, 0.1);
-    }
-
-    /* Quick Actions */
-    .quick-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    .action-btn {
-      padding: 1rem;
-      background: var(--translucent-white);
-      border: 1px solid var(--dark-gray);
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-align: center;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 500;
-      color: var(--white);
-    }
-
-    .action-btn:hover {
-      background: var(--white);
-      color: var(--black);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 15px rgba(255, 255, 255, 0.1);
-    }
-
-    /* Scrollbar Styling */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--black);
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--dark-gray);
-      border-radius: 3px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--light-gray);
-    }
-
-    /* Animations */
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .card {
-      animation: fadeInUp 0.4s ease-out;
-    }
-
-    .card:nth-child(2) { animation-delay: 0.1s; }
-    .card:nth-child(3) { animation-delay: 0.2s; }
-    .card:nth-child(4) { animation-delay: 0.3s; }
-
-    /* Responsive Design */
-    @media (max-width: 1200px) {
-      .container {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-      }
-      
-      .sidebar {
-        position: static;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 1.5rem;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        padding: 1rem;
-      }
-      
-      .navbar {
-        padding: 10px 20px;
-        flex-wrap: wrap;
-        gap: 15px;
-      }
-      
-      .navbar .search {
-        order: 3;
-        flex: 100%;
-        margin: 1rem 0 0 0;
-        max-width: none;
-      }
-      
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .kanban {
-        grid-template-columns: 1fr;
-      }
-
-      .quick-actions {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Talio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #080808;
+            --white: #F8F8F8;
+            --light-gray: #CCCCCC;
+            --dark-gray: #444444;
+            --translucent-white: rgba(255, 255, 255, 0.05);
+            --translucent-black: rgba(0, 0, 0, 0.05);
+            --primary-blue: #4A90E2;
+            --secondary-green: #10b981;
+            --warning-red: #ef4444;
+        }
+
+        .light-theme {
+            --black: #F8F8F8;
+            --white: #080808;
+            --light-gray: #444444;
+            --dark-gray: #CCCCCC;
+            --translucent-white: rgba(0, 0, 0, 0.05);
+            --translucent-black: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            line-height: 1.6;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            max-width: 1200px;
+            background: var(--translucent-black);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--dark-gray);
+            border-radius: 50px;
+            padding: 10px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar:hover {
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .navbar .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar .nav-links a:hover {
+            background: var(--white);
+            color: var(--black);
+        }
+
+        .navbar .search {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+            margin: 0 2rem;
+        }
+
+        .navbar .search input {
+            width: 100%;
+            padding: 8px 15px 8px 2.5rem;
+            background: var(--translucent-white);
+            border: 1px solid var(--dark-gray);
+            border-radius: 20px;
+            color: var(--white);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .navbar .search input::placeholder {
+            color: var(--dark-gray);
+        }
+
+        .navbar .search input:focus {
+            border-color: var(--white);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+        }
+
+        .navbar .search::before {
+            content: "🔍";
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--light-gray);
+        }
+
+        .navbar .profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .notification-badge {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-badge .bell-icon {
+            font-size: 24px;
+            color: var(--light-gray);
+            transition: color 0.3s ease;
+        }
+
+        .notification-badge:hover .bell-icon {
+            color: var(--white);
+        }
+
+        /* NEW MODAL STYLES */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            animation: fadeInOverlay 0.3s ease-out;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: var(--black);
+            color: var(--white);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: fadeInScale 0.3s ease-out;
+        }
+        
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--dark-gray);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--light-gray);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .close-btn:hover {
+            color: var(--white);
+        }
+
+        .request-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .request-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--translucent-black);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--dark-gray);
+        }
+        
+        .request-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 2px solid var(--dark-gray);
+        }
+        
+        .request-info {
+            flex-grow: 1;
+        }
+        
+        .request-info h4 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .request-info p {
+            font-size: 0.9rem;
+            color: var(--light-gray);
+        }
+        
+        .request-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .request-actions button {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .accept-btn {
+            background-color: var(--secondary-green);
+            color: var(--white);
+        }
+        
+        .reject-btn {
+            background-color: var(--warning-red);
+            color: var(--white);
+        }
+        
+        .accept-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .reject-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .no-requests-message {
+            text-align: center;
+            padding: 2rem;
+            color: var(--light-gray);
+        }
+        /* END NEW MODAL STYLES */
+
+        .navbar .profile img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--dark-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .navbar .profile img:hover {
+            border-color: var(--white);
+            box-shadow: 0 0 10px var(--white);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 100px auto 0;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--translucent-white);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--dark-gray);
+            padding: 1.5rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(255, 255, 255, 0.1);
+        }
+
+        .card h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Welcome Section */
+        .welcome {
+            background: var(--translucent-black);
+            backdrop-filter: blur(10px);
+            color: var(--white);
+            padding: 2rem;
+            border-radius: 20px;
+        }
+
+        .welcome h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome p {
+            font-size: 1.1rem;
+            color: var(--light-gray);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--translucent-white);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-number {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--light-gray);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Activity Feed */
+        .activity-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--dark-gray);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--dark-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--white);
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-content strong {
+            color: var(--white);
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .activity-time {
+            font-size: 0.8rem;
+            color: var(--light-gray);
+            margin-top: 0.25rem;
+        }
+
+        /* Kanban Board */
+        .kanban {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .kanban-column {
+            background: var(--translucent-white);
+            border-radius: 15px;
+            padding: 1rem;
+            min-height: 200px;
+        }
+
+        .kanban-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--dark-gray);
+        }
+
+        .kanban-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .task-count {
+            background: var(--white);
+            color: var(--black);
+            border-radius: 12px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .task-card {
+            background: var(--translucent-black);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .task-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .task-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+
+        .task-meta {
+            font-size: 0.8rem;
+            color: var(--light-gray);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Members List */
+        .member-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--dark-gray);
+        }
+
+        .member-item:last-child {
+            border-bottom: none;
+        }
+
+        .member-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--dark-gray);
+            transition: all 0.3s ease;
+        }
+
+        .member-avatar:hover {
+            border-color: var(--white);
+        }
+
+        .member-info h4 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 0.25rem;
+        }
+
+        .member-role {
+            font-size: 0.85rem;
+            color: var(--light-gray);
+        }
+
+        .status-online {
+            width: 10px;
+            height: 10px;
+            background: var(--light-gray);
+            border-radius: 50%;
+            margin-left: auto;
+            border: 2px solid var(--black);
+        }
+
+        /* Resources List */
+        .resource-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            border: 1px solid var(--dark-gray);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .resource-item:hover {
+            background: var(--translucent-white);
+            border-color: var(--white);
+        }
+
+        .resource-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--dark-gray);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--white);
+        }
+
+        .resource-info h4 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            color: var(--white);
+            margin-bottom: 0.25rem;
+        }
+
+        .resource-meta {
+            font-size: 0.8rem;
+            color: var(--light-gray);
+        }
+
+        /* Chat Messages */
+        .chat-messages {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+
+        .message {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .message-author {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            color: var(--white);
+            font-size: 0.9rem;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            color: var(--light-gray);
+        }
+
+        .message-text {
+            font-size: 0.9rem;
+            color: var(--light-gray);
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--translucent-white);
+            border: 1px solid var(--dark-gray);
+            border-radius: 20px;
+            color: var(--white);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input input:focus {
+            border-color: var(--white);
+            background: var(--translucent-black);
+        }
+
+        .chat-input button {
+            padding: 0.75rem 1.5rem;
+            background: var(--white);
+            color: var(--black);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            padding: 1rem;
+            background: var(--translucent-white);
+            border: 1px solid var(--dark-gray);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            color: var(--white);
+        }
+
+        .action-btn:hover {
+            background: var(--white);
+            color: var(--black);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--black);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--dark-gray);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--light-gray);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        .card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .card:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .card:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .sidebar {
+                position: static;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .navbar {
+                padding: 10px 20px;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .navbar .search {
+                order: 3;
+                flex: 100%;
+                margin: 1rem 0 0 0;
+                max-width: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .kanban {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body class="light-theme">
-  <!-- Navbar -->
-  <div class="navbar">
-    <div class="logo">
-      🚀 Skill Hub
-    </div>
-    <div class="nav-links">
-      <a href="index.html">Dashboard</a>
-      <a href="workspace.html">Workspace</a>
-    </div>
-    <div class="search">
-      <input type="text" placeholder="Search groups, members, projects..."/>
-    </div>
-    <div class="profile">
-      <div class="notification-badge">🔔</div>
-      <img src="https://i.pravatar.cc/100?img=1" alt="profile">
-    </div>
-  </div>
-
-  <!-- Main Container -->
-  <div class="container">
-    <!-- Main Content -->
-    <div class="main-content">
-      <!-- Welcome Section -->
-      <div class="card welcome">
-        <h2>Welcome back! 👋</h2>
-        <p>AI & Flutter Development Team - Let's build something amazing together</p>
-      </div>
-
-      <!-- Stats Overview -->
-      <div class="card">
-        <h3>📊 Team Overview</h3>
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-number">25</div>
-            <div class="stat-label">Active Members</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number">3</div>
-            <div class="stat-label">Projects</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number">12</div>
-            <div class="stat-label">Resources</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number">89%</div>
-            <div class="stat-label">Completion Rate</div>
-          </div>
+    <div class="navbar">
+        <div class="logo">
+            Talio
         </div>
-      </div>
-
-      <!-- Project Board -->
-      <div class="card">
-        <h3>🚀 Project Board</h3>
-        <div class="kanban">
-          <div class="kanban-column">
-            <div class="kanban-header">
-              <div class="kanban-title">📝 To Do</div>
-              <div class="task-count">3</div>
-            </div>
-            <div class="task-card">
-              <div class="task-title">Setup GitHub Repository</div>
-              <div class="task-meta">
-                <span>🔥 High Priority</span>
-                <span>👤 Alice</span>
-              </div>
-            </div>
-            <div class="task-card">
-              <div class="task-title">Create UI Wireframes</div>
-              <div class="task-meta">
-                <span>⚡ Medium</span>
-                <span>👤 Charlie</span>
-              </div>
-            </div>
-            <div class="task-card">
-              <div class="task-title">Research AI Models</div>
-              <div class="task-meta">
-                <span>🟢 Low</span>
-                <span>👤 Bob</span>
-              </div>
-            </div>
-          </div>
-          <div class="kanban-column">
-            <div class="kanban-header">
-              <div class="kanban-title">⚡ In Progress</div>
-              <div class="task-count">2</div>
-            </div>
-            <div class="task-card">
-              <div class="task-title">Login Page Design</div>
-              <div class="task-meta">
-                <span>🔥 High Priority</span>
-                <span>👤 Alice</span>
-              </div>
-            </div>
-            <div class="task-card">
-              <div class="task-title">Database Schema</div>
-              <div class="task-meta">
-                <span>⚡ Medium</span>
-                <span>👤 Bob</span>
-              </div>
-            </div>
-          </div>
-          <div class="kanban-column">
-            <div class="kanban-header">
-              <div class="kanban-title">✅ Done</div>
-              <div class="task-count">4</div>
-            </div>
-            <div class="task-card">
-              <div class="task-title">Project Proposal</div>
-              <div class="task-meta">
-                <span>✨ Completed</span>
-                <span>👤 Team</span>
-              </div>
-            </div>
-            <div class="task-card">
-              <div class="task-title">Tech Stack Selection</div>
-              <div class="task-meta">
-                <span>✨ Completed</span>
-                <span>👤 Alice</span>
-              </div>
-            </div>
-          </div>
+        <div class="nav-links">
+            <a href="index.html">Dashboard</a>
+            <a href="workspace.html">Workspace</a>
         </div>
-      </div>
-
-      <!-- Activity Feed -->
-      <div class="card">
-        <h3>📰 Recent Activity</h3>
-        <div class="activity-item">
-          <div class="activity-avatar">🚀</div>
-          <div class="activity-content">
-            <div><strong>Alice</strong> started the new Flutter Finance App project</div>
-            <div class="activity-time">2 hours ago</div>
-          </div>
+        <div class="search">
+            <input type="text" placeholder="Search groups, members, projects..." />
         </div>
-        <div class="activity-item">
-          <div class="activity-avatar">💻</div>
-          <div class="activity-content">
-            <div><strong>Bob</strong> completed the backend API setup</div>
-            <div class="activity-time">4 hours ago</div>
-          </div>
+        <div class="profile">
+            <div class="notification-badge" id="notification-badge">
+                <span class="bell-icon">🔔</span>
+            </div>
+            <img id="profile-pic" src="https://i.pravatar.cc/100?img=1" alt="profile">
         </div>
-        <div class="activity-item">
-          <div class="activity-avatar">🎨</div>
-          <div class="activity-content">
-            <div><strong>Charlie</strong> shared new UI design guidelines</div>
-            <div class="activity-time">1 day ago</div>
-          </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-avatar">📚</div>
-          <div class="activity-content">
-            <div><strong>Diana</strong> added Flutter documentation to resources</div>
-            <div class="activity-time">2 days ago</div>
-          </div>
-        </div>
-      </div>
     </div>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <!-- Team Members -->
-      <div class="card">
-        <h3>👥 Team Members</h3>
-        <div class="member-item">
-          <img class="member-avatar" src="https://i.pravatar.cc/100?img=2" alt="Alice">
-          <div class="member-info">
-            <h4>Alice Chen</h4>
-            <div class="member-role">Flutter Mentor</div>
-          </div>
-          <div class="status-online"></div>
-        </div>
-        <div class="member-item">
-          <img class="member-avatar" src="https://i.pravatar.cc/100?img=3" alt="Bob">
-          <div class="member-info">
-            <h4>Bob Wilson</h4>
-            <div class="member-role">Backend Developer</div>
-          </div>
-          <div class="status-online"></div>
-        </div>
-        <div class="member-item">
-          <img class="member-avatar" src="https://i.pravatar.cc/100?img=4" alt="Charlie">
-          <div class="member-info">
-            <h4>Charlie Davis</h4>
-            <div class="member-role">UI/UX Designer</div>
-          </div>
-        </div>
-        <div class="member-item">
-          <img class="member-avatar" src="https://i.pravatar.cc/100?img=5" alt="Diana">
-          <div class="member-info">
-            <h4>Diana Kumar</h4>
-            <div class="member-role">AI Specialist</div>
-          </div>
-          <div class="status-online"></div>
-        </div>
-      </div>
-
-      <!-- Resources -->
-      <div class="card">
-        <h3>📂 Shared Resources</h3>
-        <div class="resource-item">
-          <div class="resource-icon">📘</div>
-          <div class="resource-info">
-            <h4>Flutter Documentation</h4>
-            <div class="resource-meta">Updated 2 days ago</div>
-          </div>
-        </div>
-        <div class="resource-item">
-          <div class="resource-icon">📊</div>
-          <div class="resource-info">
-            <h4>AI Dataset Collection</h4>
-            <div class="resource-meta">Added by Diana</div>
-          </div>
-        </div>
-        <div class="resource-item">
-          <div class="resource-icon">🎨</div>
-          <div class="resource-info">
-            <h4>UI/UX Guidelines</h4>
-            <div class="resource-meta">Design system v2.0</div>
-          </div>
-        </div>
-        <div class="resource-item">
-          <div class="resource-icon">⚙️</div>
-          <div class="resource-info">
-            <h4>API Documentation</h4>
-            <div class="resource-meta">Backend endpoints</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Team Chat -->
-      <div class="card">
-        <h3>💬 Team Chat</h3>
-        <div class="chat-messages">
-          <div class="message">
-            <img class="message-avatar" src="https://i.pravatar.cc/100?img=2" alt="Alice">
-            <div class="message-content">
-              <div class="message-header">
-                <span class="message-author">Alice</span>
-                <span class="message-time">10:30 AM</span>
-              </div>
-              <div class="message-text">Hi team, ready for today's sprint planning? 🚀</div>
+    <div class="modal-overlay" id="request-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Incoming Join Requests</h3>
+                <button class="close-btn" id="close-modal-btn">&times;</button>
             </div>
-          </div>
-          <div class="message">
-            <img class="message-avatar" src="https://i.pravatar.cc/100?img=3" alt="Bob">
-            <div class="message-content">
-              <div class="message-header">
-                <span class="message-author">Bob</span>
-                <span class="message-time">10:32 AM</span>
-              </div>
-              <div class="message-text">Absolutely! I've got the backend setup ready to demo.</div>
+            <div class="request-list" id="requests-container">
+                <p class="no-requests-message">Loading requests...</p>
             </div>
-          </div>
-          <div class="message">
-            <img class="message-avatar" src="https://i.pravatar.cc/100?img=4" alt="Charlie">
-            <div class="message-content">
-              <div class="message-header">
-                <span class="message-author">Charlie</span>
-                <span class="message-time">10:35 AM</span>
-              </div>
-              <div class="message-text">Perfect timing! Just finished the wireframes 🎨</div>
-            </div>
-          </div>
         </div>
-        <div class="chat-input">
-          <input type="text" placeholder="Type a message...">
-          <button>Send</button>
-        </div>
-      </div>
-
-      <!-- Quick Actions -->
-      <div class="card">
-        <h3>⚡ Quick Actions</h3>
-        <div class="quick-actions">
-          <button class="action-btn">📝 New Task</button>
-          <button class="action-btn">👥 Invite Member</button>
-          <button class="action-btn">📄 Share Resource</button>
-          <button class="action-btn">🔔 Send Update</button>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <script>
-    // Chat functionality
-    document.querySelector('.chat-input button').addEventListener('click', function() {
-      const input = document.querySelector('.chat-input input');
-      if (input.value.trim()) {
-        const messages = document.querySelector('.chat-messages');
-        const message = document.createElement('div');
-        message.className = 'message';
-        message.innerHTML = `
-          <img class="message-avatar" src="https://i.pravatar.cc/100?img=1" alt="User">
-          <div class="message-content">
-            <div class="message-header">
-              <span class="message-author">You</span>
-              <span class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+    <div class="container">
+        <div class="main-content">
+            <div class="card welcome">
+                <h2 id="team-name">AI & Flutter Development Team</h2>
+                <p id="team-description">Let's build something amazing together</p>
             </div>
-            <div class="message-text">${input.value}</div>
-          </div>
-        `;
-        messages.appendChild(message);
-        messages.scrollTop = messages.scrollHeight;
-        input.value = '';
-      }
-    });
 
-    // Intersection Observer for animations
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
+            <div class="card">
+                <h3>📊 Team Overview</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="member-count">0</div>
+                        <div class="stat-label">Active Members</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Projects</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">Resources</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">89%</div>
+                        <div class="stat-label">Completion Rate</div>
+                    </div>
+                </div>
+            </div>
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('fade-in-up');
-        }
-      });
-    }, observerOptions);
+            <div class="card">
+                <h3>🚀 Project Board</h3>
+                <div class="kanban">
+                    <div class="kanban-column">
+                        <div class="kanban-header">
+                            <div class="kanban-title">📝 To Do</div>
+                            <div class="task-count">3</div>
+                        </div>
+                        <div class="task-card">
+                            <div class="task-title">Setup GitHub Repository</div>
+                            <div class="task-meta">
+                                <span>🔥 High Priority</span>
+                                <span>👤 Alice</span>
+                            </div>
+                        </div>
+                        <div class="task-card">
+                            <div class="task-title">Create UI Wireframes</div>
+                            <div class="task-meta">
+                                <span>⚡ Medium</span>
+                                <span>👤 Charlie</span>
+                            </div>
+                        </div>
+                        <div class="task-card">
+                            <div class="task-title">Research AI Models</div>
+                            <div class="task-meta">
+                                <span>🟢 Low</span>
+                                <span>👤 Bob</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kanban-column">
+                        <div class="kanban-header">
+                            <div class="kanban-title">⚡ In Progress</div>
+                            <div class="task-count">2</div>
+                        </div>
+                        <div class="task-card">
+                            <div class="task-title">Login Page Design</div>
+                            <div class="task-meta">
+                                <span>🔥 High Priority</span>
+                                <span>👤 Alice</span>
+                            </div>
+                        </div>
+                        <div class="task-card">
+                            <div class="task-title">Database Schema</div>
+                            <div class="task-meta">
+                                <span>⚡ Medium</span>
+                                <span>👤 Bob</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kanban-column">
+                        <div class="kanban-header">
+                            <div class="kanban-title">✅ Done</div>
+                            <div class="task-count">4</div>
+                        </div>
+                        <div class="task-card">
+                            <div class="task-title">Project Proposal</div>
+                            <div class="task-meta">
+                                <span>✨ Completed</span>
+                                <span>👤 Team</span>
+                            </div>
+                        </div>
+                        <div class="task-card">
+                            <div class="task-title">Tech Stack Selection</div>
+                            <div class="task-meta">
+                                <span>✨ Completed</span>
+                                <span>👤 Alice</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    document.querySelectorAll('.card, .stat-card, .task-card, .activity-item, .member-item, .resource-item').forEach(el => {
-      observer.observe(el);
-    });
+            <div class="card">
+                <h3>📰 Recent Activity</h3>
+                <div class="activity-item">
+                    <div class="activity-avatar">🚀</div>
+                    <div class="activity-content">
+                        <div><strong>Alice</strong> started the new Flutter Finance App project</div>
+                        <div class="activity-time">2 hours ago</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-avatar">💻</div>
+                    <div class="activity-content">
+                        <div><strong>Bob</strong> completed the backend API setup</div>
+                        <div class="activity-time">4 hours ago</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-avatar">🎨</div>
+                    <div class="activity-content">
+                        <div><strong>Charlie</strong> shared new UI design guidelines</div>
+                        <div class="activity-time">1 day ago</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-avatar">📚</div>
+                    <div class="activity-content">
+                        <div><strong>Diana</strong> added Flutter documentation to resources</div>
+                        <div class="activity-time">2 days ago</div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    // Counter animation for stats
-    function animateCounters() {
-      const counters = document.querySelectorAll('.stat-number');
-      counters.forEach(counter => {
-        const target = parseInt(counter.textContent.replace(/\D/g, ''));
-        const duration = 2000;
-        const increment = target / (duration / 16);
-        let current = 0;
-        const timer = setInterval(() => {
-          current += increment;
-          if (current >= target) {
-            current = target;
-            clearInterval(timer);
-          }
-          const suffix = counter.textContent.replace(/\d/g, '');
-          counter.textContent = Math.floor(current) + suffix;
-        }, 16);
-      });
-    }
+        <div class="sidebar">
+            <div class="card">
+                <h3>👥 Team Members</h3>
+                <div class="member-list" id="member-list">
+                    <p class="no-members-message">Loading members...</p>
+                </div>
+            </div>
 
-    const statsObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          animateCounters();
-          statsObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.5 });
+            <div class="card">
+                <h3>📂 Shared Resources</h3>
+                <div class="resource-item">
+                    <div class="resource-icon">📘</div>
+                    <div class="resource-info">
+                        <h4>Flutter Documentation</h4>
+                        <div class="resource-meta">Updated 2 days ago</div>
+                    </div>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-icon">📊</div>
+                    <div class="resource-info">
+                        <h4>AI Dataset Collection</h4>
+                        <div class="resource-meta">Added by Diana</div>
+                    </div>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-icon">🎨</div>
+                    <div class="resource-info">
+                        <h4>UI/UX Guidelines</h4>
+                        <div class="resource-meta">Design system v2.0</div>
+                    </div>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-icon">⚙️</div>
+                    <div class="resource-info">
+                        <h4>API Documentation</h4>
+                        <div class="resource-meta">Backend endpoints</div>
+                    </div>
+                </div>
+            </div>
 
-    document.querySelectorAll('.stats-grid').forEach(el => {
-      statsObserver.observe(el);
-    });
-  </script>
+            <div class="card">
+                <h3>💬 Team Chat</h3>
+                <div class="chat-messages">
+                    <div class="message">
+                        <img class="message-avatar" src="https://i.pravatar.cc/100?img=2" alt="Alice">
+                        <div class="message-content">
+                            <div class="message-header">
+                                <span class="message-author">Alice</span>
+                                <span class="message-time">10:30 AM</span>
+                            </div>
+                            <div class="message-text">Hi team, ready for today's sprint planning? 🚀</div>
+                        </div>
+                    </div>
+                    <div class="message">
+                        <img class="message-avatar" src="https://i.pravatar.cc/100?img=3" alt="Bob">
+                        <div class="message-content">
+                            <div class="message-header">
+                                <span class="message-author">Bob</span>
+                                <span class="message-time">10:32 AM</span>
+                            </div>
+                            <div class="message-text">Absolutely! I've got the backend setup ready to demo.</div>
+                        </div>
+                    </div>
+                    <div class="message">
+                        <img class="message-avatar" src="https://i.pravatar.cc/100?img=4" alt="Charlie">
+                        <div class="message-content">
+                            <div class="message-header">
+                                <span class="message-author">Charlie</span>
+                                <span class="message-time">10:35 AM</span>
+                            </div>
+                            <div class="message-text">Perfect timing! Just finished the wireframes 🎨</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <input type="text" placeholder="Type a message..." />
+                    <button>Send</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>⚡ Quick Actions</h3>
+                <div class="quick-actions">
+                    <button class="action-btn">📝 New Task</button>
+                    <button class="action-btn">👥 Invite Member</button>
+                    <button class="action-btn">📄 Share Resource</button>
+                    <button class="action-btn">🔔 Send Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const teamId = urlParams.get('teamId');
+            const userEmail = urlParams.get('email');
+            const token = localStorage.getItem('token');
+
+            if (!teamId || !userEmail || !token) {
+                console.error('Missing required URL parameters or token.');
+                window.location.href = '/home/authentication/login.html';
+                return;
+            }
+
+            const teamNameElement = document.getElementById('team-name');
+            const teamDescriptionElement = document.getElementById('team-description');
+            const memberCountElement = document.getElementById('member-count');
+            const memberListElement = document.getElementById('member-list');
+
+            const fetchTeamData = async () => {
+                memberListElement.innerHTML = '<p class="no-members-message">Loading members...</p>';
+                try {
+                    // Fetch all teams to find the specific team
+                    const allTeamsResponse = await fetch('/api/teams/all', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (!allTeamsResponse.ok) {
+                        throw new Error('Failed to fetch teams.');
+                    }
+                    const allTeams = await allTeamsResponse.json();
+                    const team = allTeams.find(t => t.id == teamId);
+
+                    if (!team) {
+                        throw new Error('Team not found.');
+                    }
+
+                    // Update team details
+                    teamNameElement.textContent = team.project_name;
+                    teamDescriptionElement.textContent = team.project_description;
+
+                    let members = [];
+                    try {
+                        members = team.members ? JSON.parse(team.members) : [];
+                    } catch (e) {
+                        console.error("Error parsing members JSON:", e);
+                    }
+
+                    let roles = [];
+                    try {
+                        roles = team.roles ? JSON.parse(team.roles) : [];
+                    } catch (e) {
+                        console.error("Error parsing roles JSON:", e);
+                    }
+
+                    const allMembers = await Promise.all(members.map(async (member) => {
+                        const userProfileResponse = await fetch(`/api/profile/get-data?email=${encodeURIComponent(member.email)}`, {
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        });
+                        const userProfile = userProfileResponse.ok ? await userProfileResponse.json() : null;
+                        
+                        // Find the role for the current member
+                        const memberRole = roles.find(r => r.name === member.role);
+                        const roleName = memberRole ? memberRole.name : member.role || 'Unknown Role';
+                        
+                        return {
+                            name: userProfile ? userProfile.name : 'Unknown User',
+                            profile_pic: userProfile && userProfile.profile_pic ? userProfile.profile_pic : `https://i.pravatar.cc/100?u=${member.email}`,
+                            role: roleName,
+                            isOnline: true // Placeholder for online status
+                        };
+                    }));
+
+                    const totalMembers = team.total_members;
+                    memberCountElement.textContent = `${members.length}/${totalMembers}`;
+                    renderMembers(allMembers);
+
+                } catch (error) {
+                    console.error('Error fetching team data:', error);
+                    memberListElement.innerHTML = `<p class="no-members-message">Failed to load members. Please try again.</p>`;
+                }
+            };
+
+            const renderMembers = (members) => {
+                const memberListElement = document.getElementById('member-list');
+                memberListElement.innerHTML = '';
+                if (members && members.length > 0) {
+                    members.forEach(member => {
+                        const memberItem = document.createElement('div');
+                        memberItem.className = 'member-item';
+                        memberItem.innerHTML = `
+                            <img class="member-avatar" src="${member.profile_pic}" alt="${member.name}">
+                            <div class="member-info">
+                                <h4>${member.name}</h4>
+                                <div class="member-role">${member.role}</div>
+                            </div>
+                            ${member.isOnline ? '<div class="status-online" title="Online"></div>' : ''}
+                        `;
+                        memberListElement.appendChild(memberItem);
+                    });
+                } else {
+                    memberListElement.innerHTML = '<p class="no-members-message">No members in this team yet.</p>';
+                }
+            };
+
+            // Initial data fetch
+            fetchTeamData();
+
+            // Function to handle request actions (accept/reject)
+            const handleRequestAction = async (requestId, action) => {
+                const requestItem = document.querySelector(`.request-item[data-request-id="${requestId}"]`);
+                const buttons = requestItem.querySelectorAll('button');
+                
+                buttons.forEach(btn => btn.disabled = true);
+                
+                try {
+                    const response = await fetch('/api/teams/update-join-request', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ requestId, action })
+                    });
+
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.message || 'Failed to process request.');
+                    }
+                    
+                    alert(`Request ${action}ed successfully!`);
+                    fetchRequests(); // Refresh the list of requests
+                    
+                } catch (error) {
+                    console.error('Error updating request:', error);
+                    alert('Failed to process request: ' + error.message);
+                    buttons.forEach(btn => btn.disabled = false); // Re-enable buttons on failure
+                }
+            };
+
+            // Function to fetch and render incoming join requests
+            const fetchRequests = async () => {
+                const requestsContainer = document.getElementById('requests-container');
+                requestsContainer.innerHTML = '<p class="no-requests-message">Loading requests...</p>';
+
+                try {
+                    const response = await fetch(`/api/teams/join-requests?email=${encodeURIComponent(userEmail)}`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch requests.');
+                    }
+                    const requests = await response.json();
+                    renderRequests(requests);
+                } catch (error) {
+                    console.error('Error fetching requests:', error);
+                    requestsContainer.innerHTML = `<p class="no-requests-message">Error loading requests.</p>`;
+                }
+            };
+
+            const renderRequests = (requests) => {
+                const requestsContainer = document.getElementById('requests-container');
+                requestsContainer.innerHTML = '';
+                if (requests && requests.length > 0) {
+                    requests.forEach(request => {
+                        const requestItem = document.createElement('div');
+                        requestItem.className = 'request-item';
+                        requestItem.setAttribute('data-request-id', request.id);
+                        
+                        requestItem.innerHTML = `
+                            <img class="request-avatar" src="https://i.pravatar.cc/100?u=${request.requester_email}" alt="Avatar">
+                            <div class="request-info">
+                                <h4>${request.requester_name}</h4>
+                                <p>Wants to join as <strong>${request.requested_role}</strong></p>
+                            </div>
+                            <div class="request-actions">
+                                <button class="accept-btn">Accept</button>
+                                <button class="reject-btn">Reject</button>
+                            </div>
+                        `;
+                        
+                        const acceptBtn = requestItem.querySelector('.accept-btn');
+                        const rejectBtn = requestItem.querySelector('.reject-btn');
+                        
+                        acceptBtn.addEventListener('click', () => handleRequestAction(request.id, 'approve'));
+                        rejectBtn.addEventListener('click', () => handleRequestAction(request.id, 'reject'));
+
+                        requestsContainer.appendChild(requestItem);
+                    });
+                } else {
+                    requestsContainer.innerHTML = `<p class="no-requests-message">No new requests.</p>`;
+                }
+            };
+            
+            // Toggle notification modal
+            const notificationBadge = document.getElementById('notification-badge');
+            const requestModal = document.getElementById('request-modal');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            
+            notificationBadge.addEventListener('click', () => {
+                requestModal.classList.add('active');
+                fetchRequests(); // Fetch requests when the modal opens
+            });
+
+            closeModalBtn.addEventListener('click', () => {
+                requestModal.classList.remove('active');
+            });
+            
+            requestModal.addEventListener('click', (e) => {
+                if (e.target === requestModal) {
+                    requestModal.classList.remove('active');
+                }
+            });
+
+            // Chat functionality
+            document.querySelector('.chat-input button').addEventListener('click', function() {
+                const input = document.querySelector('.chat-input input');
+                if (input.value.trim()) {
+                    const messages = document.querySelector('.chat-messages');
+                    const message = document.createElement('div');
+                    message.className = 'message';
+                    message.innerHTML = `
+                        <img class="message-avatar" src="https://i.pravatar.cc/100?u=${userEmail}" alt="User">
+                        <div class="message-content">
+                            <div class="message-header">
+                                <span class="message-author">You</span>
+                                <span class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                            </div>
+                            <div class="message-text">${input.value}</div>
+                        </div>
+                    `;
+                    messages.appendChild(message);
+                    messages.scrollTop = messages.scrollHeight;
+                    input.value = '';
+                }
+            });
+
+            // Intersection Observer for animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in-up');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.card, .stat-card, .task-card, .activity-item, .member-item, .resource-item').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Counter animation for stats
+            function animateCounters() {
+                const counters = document.querySelectorAll('.stat-number');
+                counters.forEach(counter => {
+                    const target = parseInt(counter.textContent.replace(/\D/g, ''));
+                    const duration = 2000;
+                    const increment = target / (duration / 16);
+                    let current = 0;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            current = target;
+                            clearInterval(timer);
+                        }
+                        const suffix = counter.textContent.replace(/\d/g, '');
+                        counter.textContent = Math.floor(current) + suffix;
+                    }, 16);
+                });
+            }
+
+            const statsObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounters();
+                        statsObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            document.querySelectorAll('.stats-grid').forEach(el => {
+                statsObserver.observe(el);
+            });
+        });
+    </script>
 </body>
 </html>

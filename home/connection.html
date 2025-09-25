@@ -14,6 +14,9 @@
             --dark-gray: #444444;
             --translucent-white: rgba(255, 255, 255, 0.05);
             --translucent-black: rgba(0, 0, 0, 0.05);
+            --primary-blue: #4A90E2;
+            --secondary-green: #10b981;
+            --warning-red: #ef4444;
         }
 
         /* NEW THEME VARIABLES (from index.html) */
@@ -666,6 +669,233 @@
             }
         }
 
+        /* NEW MODAL STYLES */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            animation: fadeInOverlay 0.3s ease-out;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeInOverlay {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background-color: var(--black);
+            color: var(--white);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: fadeInScale 0.3s ease-out;
+            border: 1px solid var(--dark-gray);
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--dark-gray);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--light-gray);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--white);
+        }
+
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .modal-section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+
+        .roles-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .role-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--translucent-black);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--dark-gray);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .role-item.selected {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+            background: rgba(74, 144, 226, 0.1);
+        }
+
+        .role-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .role-info input[type="radio"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--dark-gray);
+            background: var(--translucent-white);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .role-info input[type="radio"]:checked {
+            background-color: var(--primary-blue);
+            border-color: var(--primary-blue);
+        }
+
+        .role-info label {
+            font-weight: 500;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .role-vacancy {
+            font-size: 0.9rem;
+            color: var(--light-gray);
+            font-weight: 600;
+        }
+
+        .skills-section {
+            background: var(--translucent-black);
+            border: 1px solid var(--dark-gray);
+            border-radius: 12px;
+            padding: 1rem;
+            min-height: 100px;
+            display: none; /* Hidden by default */
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 0.5rem;
+        }
+
+        .skill-tag {
+            background: var(--dark-gray);
+            border-radius: 16px;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--white);
+        }
+
+        .apply-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .apply-btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .apply-btn:disabled {
+            background: var(--dark-gray);
+            cursor: not-allowed;
+        }
+
+        .cancel-btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--dark-gray);
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            background: none;
+            color: var(--light-gray);
+            transition: all 0.3s ease;
+        }
+
+        .cancel-btn:hover {
+            border-color: var(--white);
+            color: var(--white);
+        }
+
+        /* Mobile Responsive */
         @media (max-width: 768px) {
             .nav {
                 flex-wrap: wrap;
@@ -835,6 +1065,36 @@
             </div>
         </div>
     </footer>
+    
+    <div class="modal-overlay" id="joinModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalProjectName">Join Project</h3>
+                <button class="close-btn" id="closeModalBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="modalProjectDescription" style="color: var(--light-gray); margin-bottom: 1rem;"></p>
+                
+                <h4 class="modal-section-title">Select a Role to Apply For</h4>
+                <form id="joinRequestForm">
+                    <div class="roles-list" id="rolesList">
+                        </div>
+                </form>
+                
+                <div class="skills-section" id="skillsSection">
+                    <h4 class="modal-section-title">Required Skills for <span id="selectedRoleName"></span></h4>
+                    <p style="color: var(--light-gray); margin-bottom: 1rem;">Confirm that you have the following skills:</p>
+                    <div class="skills-list" id="requiredSkillsList">
+                        </div>
+                </div>
+                
+                <div class="apply-actions">
+                    <button class="cancel-btn" id="modalCancelBtn">Cancel</button>
+                    <button class="apply-btn" id="applyBtn" disabled>Apply</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         let allProjects = [];
@@ -857,19 +1117,43 @@
 
         const createProjectCard = (project) => {
             const card = document.createElement('div');
-            const tags = project.project_tags ? JSON.parse(project.project_tags) : [];
-            const members = project.members ? JSON.parse(project.members) : [];
+            let tags = [];
+            try {
+                tags = project.project_tags ? JSON.parse(project.project_tags) : [];
+            } catch (e) {
+                console.error("Error parsing project tags:", e);
+            }
+            
+            let members = [];
+            try {
+                members = project.members ? JSON.parse(project.members) : [];
+            } catch (e) {
+                console.error("Error parsing project members:", e);
+            }
+            
             const isCreator = project.creator_email === userEmail;
             const isJoined = members.some(member => member.email === userEmail);
+            const hasPendingRequest = project.hasPendingRequest;
 
             let joinButtonText = 'REQUEST TO JOIN';
             let joinButtonClass = 'join-btn';
             let joinButtonDisabled = false;
-            let requestedRole = '';
+            let neededRoleText = '';
+            let openRoles = [];
 
-            const openRoles = project.roles ? JSON.parse(project.roles) : [];
-            const firstOpenRole = openRoles.find(role => role.count > 0);
-            const neededRoleText = firstOpenRole ? `Need: ${firstOpenRole.name}` : 'Team full';
+            try {
+                openRoles = project.roles ? JSON.parse(project.roles).filter(role => role.count > 0) : [];
+            } catch (e) {
+                console.error("Error parsing project roles for project ID:", project.id, e);
+            }
+            
+            const firstOpenRole = openRoles.length > 0 ? openRoles[0] : null;
+
+            if (firstOpenRole) {
+                neededRoleText = `Need: ${firstOpenRole.name}`;
+            } else {
+                neededRoleText = 'Team full';
+            }
 
             if (isCreator) {
                 joinButtonText = 'YOUR PROJECT';
@@ -879,24 +1163,21 @@
                 joinButtonText = 'JOINED ✓';
                 joinButtonClass = 'join-btn joined';
                 joinButtonDisabled = true;
-            } else {
-                joinButtonText = `REQUEST TO JOIN`;
-                if (firstOpenRole) {
-                    requestedRole = firstOpenRole.name;
-                } else {
-                    joinButtonDisabled = true;
-                    joinButtonText = 'TEAM FULL';
-                }
+            } else if (hasPendingRequest) {
+                joinButtonText = 'REQUESTED ✓';
+                joinButtonClass = 'join-btn requested';
+                joinButtonDisabled = true;
+            } else if (!firstOpenRole) {
+                joinButtonText = 'TEAM FULL';
+                joinButtonDisabled = true;
             }
 
             card.className = `project-card`;
             card.setAttribute('data-tags', tags.join(','));
             card.setAttribute('data-id', project.id);
             card.setAttribute('data-category', project.project_category);
+            card.setAttribute('data-project-data', JSON.stringify(project));
             
-            // Add a data-requested-role attribute to the card for easier lookup
-            card.setAttribute('data-requested-role', requestedRole);
-
             card.innerHTML = `
                 <div class="need-label">${neededRoleText}</div>
                 <div class="project-header">
@@ -913,7 +1194,7 @@
                     ${tags.map(tag => `<span class="tech-tag">${tag.charAt(0).toUpperCase() + tag.slice(1)}</span>`).join('')}
                 </div>
                 <div class="project-footer">
-                    <button class="${joinButtonClass}" data-team-id="${project.id}" data-requested-role="${requestedRole}" ${joinButtonDisabled ? 'disabled' : ''}>${joinButtonText}</button>
+                    <button class="${joinButtonClass}" data-team-id="${project.id}" ${joinButtonDisabled ? 'disabled' : ''}>${joinButtonText}</button>
                     <div class="bookmark-btn" onclick="toggleBookmark(this)">
                         <div class="bookmark-icon"></div>
                     </div>
@@ -970,6 +1251,7 @@
                 allProjects = allProjects.filter(project => project.creator_email !== userEmail);
 
                 renderProjects(allProjects);
+                console.log("Projects fetched successfully:", allProjects);
 
             } catch (error) {
                 console.error('Error fetching all projects:', error);
@@ -998,80 +1280,128 @@
                 });
             });
         };
+        
+        // New modal and join logic
+        const joinModal = document.getElementById('joinModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const modalProjectName = document.getElementById('modalProjectName');
+        const modalProjectDescription = document.getElementById('modalProjectDescription');
+        const rolesList = document.getElementById('rolesList');
+        const skillsSection = document.getElementById('skillsSection');
+        const requiredSkillsList = document.getElementById('requiredSkillsList');
+        const selectedRoleName = document.getElementById('selectedRoleName');
+        const applyBtn = document.getElementById('applyBtn');
+        let selectedProject = null;
 
-        // MODIFIED initializeJoinButtons function
-        function initializeJoinButtons() {
-            document.addEventListener('click', async (e) => {
-                const button = e.target.closest('.join-btn');
-                // Check if the clicked element is a join button and not in a state where requests are not allowed
-                if (!button || button.classList.contains('joined') || button.classList.contains('your-project')) {
-                    return;
-                }
+        const openJoinModal = (project) => {
+            selectedProject = project;
+            modalProjectName.textContent = `Apply for "${project.project_name}"`;
+            modalProjectDescription.textContent = project.project_description;
+            rolesList.innerHTML = '';
+            skillsSection.style.display = 'none';
+            applyBtn.disabled = true;
 
-                const projectCard = e.target.closest('.project-card');
-                const teamId = button.getAttribute('data-team-id');
-                const requestedRole = button.getAttribute('data-requested-role');
-                
-                // If there's no requested role, there's no open spot to request
-                if (!requestedRole) {
-                    alert('This team has no open roles at the moment.');
-                    return;
-                }
-
-                const originalText = button.textContent;
-                button.textContent = 'REQUESTING...';
-                button.disabled = true;
-
-                try {
-                    const response = await fetch('/api/teams/join-request', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({ teamId, requestedRole })
-                    });
-
-                    const result = await response.json();
-
-                    if (!response.ok) {
-                         // Throw an error with the message from the server
-                        throw new Error(result.message || 'Failed to send join request.');
-                    }
-
-                    // Update button to show request sent status and provide a user alert
-                    button.textContent = 'REQUESTED ✓';
-                    button.classList.add('requested');
-                    alert(result.message);
-                    
-                } catch (error) {
-                    console.error('Error sending join request:', error);
-                    button.textContent = originalText;
-                    button.disabled = false;
-                    alert('Failed to send join request. ' + error.message);
-                }
-            });
-        }
-        // END OF MODIFIED initializeJoinButtons function
-
-        function createParticles() {
-            const particlesContainer = document.querySelector('.particles-bg');
-            const numParticles = 80;
-            for (let i = 0; i < numParticles; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                const size = Math.random() * 2 + 1;
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                particle.style.setProperty('--x-start', `${Math.random() * 100}%`);
-                particle.style.setProperty('--y-start', `${Math.random() * 100}%`);
-                particle.style.setProperty('--x-end', `${(Math.random() - 0.5) * 200}px`);
-                particle.style.setProperty('--y-end', `${(Math.random() - 0.5) * 200}px`);
-                particle.style.animationDuration = `${Math.random() * 15 + 15}s`;
-                particle.style.animationDelay = `-${Math.random() * 15}s`;
-                particlesContainer.appendChild(particle);
+            let roles = [];
+            try {
+                roles = project.roles ? JSON.parse(project.roles) : [];
+            } catch (e) {
+                console.error("Error parsing roles JSON:", e);
+                roles = [];
             }
-        }
+            const openRoles = roles.filter(role => role.count > 0);
+
+            if (openRoles.length > 0) {
+                openRoles.forEach(role => {
+                    const roleItem = document.createElement('div');
+                    roleItem.className = 'role-item';
+                    roleItem.innerHTML = `
+                        <div class="role-info">
+                            <input type="radio" id="role-${role.name}" name="role" value="${role.name}" data-skills='${JSON.stringify(role.skills || [])}'>
+                            <label for="role-${role.name}">${role.name}</label>
+                        </div>
+                        <span class="role-vacancy">(${role.count} position${role.count > 1 ? 's' : ''} available)</span>
+                    `;
+                    rolesList.appendChild(roleItem);
+                    
+                    roleItem.addEventListener('click', () => {
+                        const radio = roleItem.querySelector('input[type="radio"]');
+                        radio.checked = true;
+                        document.querySelectorAll('.role-item').forEach(item => item.classList.remove('selected'));
+                        roleItem.classList.add('selected');
+                        displayRequiredSkills(role.skills, role.name);
+                    });
+                });
+            } else {
+                rolesList.innerHTML = `<p class="no-projects-message">No open roles for this project.</p>`;
+            }
+
+            joinModal.classList.add('active');
+        };
+
+        const displayRequiredSkills = (skills, roleName) => {
+            requiredSkillsList.innerHTML = '';
+            skillsSection.style.display = 'block';
+            selectedRoleName.textContent = roleName;
+            
+            if (skills && skills.length > 0) {
+                skills.forEach(skill => {
+                    const skillTag = document.createElement('span');
+                    skillTag.className = 'skill-tag';
+                    skillTag.textContent = skill;
+                    requiredSkillsList.appendChild(skillTag);
+                });
+                applyBtn.disabled = false;
+            } else {
+                requiredSkillsList.innerHTML = '<p style="color: var(--light-gray);">No specific skills listed for this role.</p>';
+                applyBtn.disabled = false;
+            }
+        };
+
+        const handleJoinRequest = async () => {
+            const selectedRoleInput = document.querySelector('#joinRequestForm input[name="role"]:checked');
+            if (!selectedRoleInput) {
+                alert('Please select a role to apply for.');
+                return;
+            }
+
+            const requestedRole = selectedRoleInput.value;
+            const requiredSkills = JSON.parse(selectedRoleInput.getAttribute('data-skills'));
+            const skillConfirmation = confirm(`To apply for the "${requestedRole}" role, you should be proficient in: ${requiredSkills.join(', ')}. Do you still want to apply?`);
+            
+            if (!skillConfirmation) {
+                return;
+            }
+
+            applyBtn.textContent = 'Applying...';
+            applyBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/teams/join-request', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ teamId: selectedProject.id, requestedRole })
+                });
+                
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.message || 'Failed to send join request.');
+                }
+                
+                alert('Join request sent successfully!');
+                joinModal.classList.remove('active');
+                fetchAllProjects();
+
+            } catch (error) {
+                console.error('Error sending join request:', error);
+                alert('Failed to send join request. ' + error.message);
+                applyBtn.textContent = 'Apply';
+                applyBtn.disabled = false;
+            }
+        };
 
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -1082,6 +1412,25 @@
                 window.location.href = '/home/authentication/login.html';
                 return;
             }
+
+            // Bind events for the modal
+            const joinModal = document.getElementById('joinModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const modalCancelBtn = document.getElementById('modalCancelBtn');
+            const applyBtn = document.getElementById('applyBtn');
+            
+            closeModalBtn.addEventListener('click', () => joinModal.classList.remove('active'));
+            modalCancelBtn.addEventListener('click', () => joinModal.classList.remove('active'));
+            applyBtn.addEventListener('click', handleJoinRequest);
+
+            document.getElementById('projectsGrid').addEventListener('click', (e) => {
+                const button = e.target.closest('.join-btn');
+                if (button && !button.disabled) {
+                    const projectCard = e.target.closest('.project-card');
+                    const projectData = JSON.parse(projectCard.getAttribute('data-project-data'));
+                    openJoinModal(projectData);
+                }
+            });
 
             const createProjectBtnSquare = document.getElementById('createProjectBtnSquare');
             if (userEmail) {
