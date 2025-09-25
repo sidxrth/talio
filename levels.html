@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Levels & Badges | Talio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -15,9 +15,10 @@
             --translucent-white: rgba(255, 255, 255, 0.05);
             --translucent-black: rgba(0, 0, 0, 0.05);
             --primary-accent: #6c63ff;
-            --secondary-accent: #f39c12;
-            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --secondary-green: #10b981;
+            --warning-red: #ef4444;
         }
+
         .light-theme {
             --black: #F8F8F8;
             --white: #080808;
@@ -26,29 +27,26 @@
             --translucent-white: rgba(0, 0, 0, 0.05);
             --translucent-black: rgba(255, 255, 255, 0.05);
         }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
         }
+
         html {
             scroll-behavior: smooth;
         }
+
         body {
             background-color: var(--black);
             color: var(--white);
             line-height: 1.6;
             transition: background-color 0.5s ease, color 0.5s ease;
         }
-        
-        /* --- General Layout --- */
-        .page-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
 
-        /* --- Navbar --- */
+        /* Navbar */
         .nav-container {
             position: fixed;
             top: 20px;
@@ -58,6 +56,7 @@
             width: 95%;
             max-width: 1200px;
         }
+
         .nav {
             background: var(--translucent-black);
             backdrop-filter: blur(10px);
@@ -69,20 +68,24 @@
             justify-content: space-between;
             transition: all 0.3s ease;
         }
+
         .nav:hover {
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
         }
+
         .logo {
             font-family: 'Montserrat', sans-serif;
             font-size: 24px;
             font-weight: 700;
             color: var(--white);
         }
+
         .nav-links {
             display: flex;
             gap: 30px;
             list-style: none;
         }
+
         .nav-links a {
             color: var(--light-gray);
             text-decoration: none;
@@ -90,14 +93,17 @@
             font-size: 15px;
             transition: color 0.3s ease;
         }
+
         .nav-links a:hover {
             color: var(--white);
         }
+
         .nav-right {
             display: flex;
             align-items: center;
             gap: 20px;
         }
+
         .search-box {
             background: var(--translucent-white);
             border: 1px solid var(--dark-gray);
@@ -109,13 +115,16 @@
             outline: none;
             transition: all 0.3s ease;
         }
+
         .search-box::placeholder {
             color: var(--dark-gray);
         }
+
         .search-box:focus {
             border-color: var(--white);
             box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
         }
+
         .profile-icon {
             width: 35px;
             height: 35px;
@@ -125,10 +134,12 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
+
         .profile-icon:hover {
             border-color: var(--white);
             box-shadow: 0 0 10px var(--white);
         }
+
         #notification-bar {
             position: fixed;
             top: 20px;
@@ -137,37 +148,39 @@
             padding: 0;
             background: none;
         }
+
         .bell-btn {
             background: none;
             border: none;
             cursor: pointer;
             outline: none;
         }
+
         .bell-btn svg {
             width: 32px;
             height: 32px;
             color: var(--light-gray);
             transition: color 0.3s ease;
         }
+
         .bell-btn:hover svg {
             color: var(--white);
         }
 
-        /* --- Hero Section --- */
+        /* Hero Section */
         .hero-section {
             padding: 150px 20px 60px 20px;
             text-align: center;
+            position: relative;
         }
+
         .hero-section h1 {
             font-family: 'Montserrat', sans-serif;
             font-size: 48px;
             font-weight: 800;
             margin-bottom: 12px;
-            background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
+
         .hero-section p {
             font-size: 18px;
             opacity: 0.9;
@@ -176,14 +189,16 @@
             margin: 0 auto;
         }
 
-        /* --- Levels Grid --- */
+        /* Levels Grid */
         .levels-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto 100px;
             padding: 0 20px;
-            margin-bottom: 100px;
         }
+
         .level-card {
             background: var(--translucent-white);
             backdrop-filter: blur(10px);
@@ -197,27 +212,28 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 250px;
         }
+
         .level-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-8px) scale(1.02);
             box-shadow: 0 15px 30px rgba(255, 255, 255, 0.1);
         }
+
         .level-number {
             font-family: 'Montserrat', sans-serif;
-            font-size: 2rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(90deg, var(--secondary-accent), var(--primary-accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .level-card .crown-icon {
             font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-accent);
             margin-bottom: 1rem;
-            animation: bounce 2s infinite ease-in-out;
         }
+
+        .badge-image {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 1rem;
+        }
+
         .badge-title {
             font-family: 'Montserrat', sans-serif;
             font-size: 1.5rem;
@@ -225,108 +241,91 @@
             color: var(--white);
             margin-bottom: 0.5rem;
         }
-        .badge-image {
-            width: 80px;
-            height: 80px;
-            object-fit: contain;
-            margin-bottom: 1rem;
-            border-radius: 50%;
-            border: 2px solid var(--primary-accent);
-            padding: 5px;
-            background-color: var(--translucent-black);
-        }
+        
         .xp-required {
             font-size: 1rem;
             color: var(--light-gray);
         }
-        .locked-badge-message {
-            font-size: 0.9rem;
-            color: var(--dark-gray);
-            margin-bottom: 1rem;
-        }
 
-        /* --- Footer --- */
+        /* Footer */
         .footer {
             background: var(--translucent-white);
             backdrop-filter: blur(10px);
             border-top: 1px solid var(--dark-gray);
             padding: 60px 20px 20px;
+            margin-top: 100px;
         }
+
         .footer-content {
             max-width: 1200px;
             margin: 0 auto;
         }
+
         .footer-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 40px;
             margin-bottom: 40px;
         }
+
         .footer-section h3 {
             color: var(--white);
             font-weight: 600;
             margin-bottom: 20px;
             font-family: 'Montserrat', sans-serif;
         }
+
         .footer-section ul {
             list-style: none;
         }
+
         .footer-section ul li {
             margin-bottom: 10px;
         }
+
         .footer-section ul li a {
             color: var(--light-gray);
             text-decoration: none;
             transition: color 0.3s ease;
         }
+
         .footer-section ul li a:hover {
             color: var(--white);
         }
+
         .footer-bottom {
             border-top: 1px solid var(--dark-gray);
             padding-top: 20px;
             text-align: center;
             color: var(--dark-gray);
         }
-        
-        /* --- Animations --- */
-        @keyframes bounce {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .levels-grid .level-card {
-            animation: fadeIn 0.5s ease-out backwards;
-        }
-        .levels-grid .level-card:nth-child(1) { animation-delay: 0.1s; }
-        .levels-grid .level-card:nth-child(2) { animation-delay: 0.2s; }
-        .levels-grid .level-card:nth-child(3) { animation-delay: 0.3s; }
-        .levels-grid .level-card:nth-child(4) { animation-delay: 0.4s; }
-        .levels-grid .level-card:nth-child(5) { animation-delay: 0.5s; }
-        .levels-grid .level-card:nth-child(6) { animation-delay: 0.6s; }
-        /* ... add more for other cards ... */
 
-        /* --- Responsive Design --- */
         @media (max-width: 768px) {
+            .nav {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
             .nav-links {
                 display: none;
             }
+
             .search-box {
                 width: 150px;
             }
+
             .hero-section h1 {
                 font-size: 36px;
             }
+
+            .hero-section p {
+                font-size: 16px;
+            }
+
             .levels-grid {
                 grid-template-columns: 1fr;
             }
+
             .footer-grid {
                 grid-template-columns: 1fr;
             }
@@ -353,7 +352,7 @@
     </div>
 
     <div class="hero-section">
-        <h1 style="background: linear-gradient(45deg, var(--primary-accent), var(--secondary-accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Your Path to Mastery</h1>
+        <h1>Your Path to Mastery</h1>
         <p>Progress through levels and unlock exclusive badges that showcase your expertise and contributions to the community.</p>
     </div>
 
@@ -410,7 +409,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const userEmail = urlParams.get('email');
-            const token = localStorage.getItem('token');
             
             // Function to update navigation links with user email
             const updateNavLinks = (email) => {
@@ -422,7 +420,9 @@
 
             // Function to fetch user data for the nav bar
             const fetchUserData = async () => {
+                const token = localStorage.getItem('token');
                 if (!userEmail || !token) {
+                    console.error('User not authenticated.');
                     return null;
                 }
                 try {
@@ -448,8 +448,8 @@
                     const card = document.createElement('div');
                     card.className = 'level-card';
                     
-                    const badgeImageHtml = levelInfo.badge ? `<img src="https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(levelInfo.badge)}" alt="${levelInfo.badge} badge" class="badge-image">` : '';
-                    const badgeTitleHtml = levelInfo.badge ? `<h4 class="badge-title">${levelInfo.badge}</h4>` : `<p class="locked-badge-message">No Badge for this level</p>`;
+                    const badgeImageHtml = levelInfo.badge ? `<img src="https://placehold.co/80x80/${levelInfo.level % 2 === 0 ? '6c63ff' : 'f39c12'}/FFFFFF?text=Badge" alt="${levelInfo.badge} badge" class="badge-image">` : '';
+                    const badgeTitleHtml = levelInfo.badge ? `<h4 class="badge-title">${levelInfo.badge}</h4>` : `<h4 class="badge-title">No Badge</h4>`;
 
                     card.innerHTML = `
                         <div class="level-number">Level ${levelInfo.level}</div>
@@ -463,23 +463,15 @@
 
             // Initial load of content
             (async () => {
-                if (userEmail && token) {
-                    const userData = await fetchUserData();
-                    if (userData) {
-                        updateNavLinks(userEmail);
-                        const navUserName = document.getElementById('nav-user-name');
-                        const navProfileIcon = document.getElementById('nav-profile-icon');
-                        navUserName.textContent = userData.name;
-                        const profilePic = userData.profile_pic || `https://i.pravatar.cc/35?u=${userData.email}`;
-                        navProfileIcon.style.backgroundImage = `url('${profilePic}')`;
-                        navProfileIcon.style.backgroundSize = 'cover';
-                    } else {
-                        // Redirect to login if user data cannot be fetched
-                        window.location.href = '/home/authentication/login.html';
-                    }
-                } else {
-                    // Redirect to login if no email or token is found
-                    window.location.href = '/home/authentication/login.html';
+                const userData = await fetchUserData();
+                if (userData) {
+                    updateNavLinks(userEmail);
+                    const navUserName = document.getElementById('nav-user-name');
+                    const navProfileIcon = document.getElementById('nav-profile-icon');
+                    navUserName.textContent = userData.name;
+                    const profilePic = userData.profile_pic || `https://i.pravatar.cc/35?u=${userData.email}`;
+                    navProfileIcon.style.backgroundImage = `url('${profilePic}')`;
+                    navProfileIcon.style.backgroundSize = 'cover';
                 }
                 renderLevels();
             })();

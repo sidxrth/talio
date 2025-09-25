@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -242,6 +242,7 @@
             font-weight: 700;
             color: var(--white);
             display: block;
+            margin-bottom: 5px;
         }
 
         .stat-label {
@@ -851,7 +852,7 @@
         </div>
     </section>
 
-    <section class="section">
+    <section id="projects" class="section">
         <h2 class="section-title">Featured Projects</h2>
         <p class="section-subtitle">Explore epic projects created by our community members</p>
         <div class="projects-grid">
@@ -989,7 +990,7 @@
             <p class="cta-description">Join Talio today and connect with talented students from around the world. Start collaborating, learning, and growing together.</p>
             <div class="cta-buttons">
                 <button class="cta-btn-primary" id="ctaJoinBtn">Join Talio</button>
-                <button class="cta-btn-secondary">Learn More</button>
+                <button class="cta-btn-secondary" id="learnMoreBtn">Learn More</button>
             </div>
         </div>
     </section>
@@ -1132,7 +1133,7 @@
         }
         window.addEventListener('load', createParticles);
         
-        // --- Navigation Logic for Login Page ---
+        // --- Navigation Logic for Login and Levels Page ---
         document.getElementById('navSignUpBtn').addEventListener('click', function() {
             window.location.href = '/home/authentication/login.html';
         });
@@ -1143,6 +1144,11 @@
         
         document.getElementById('ctaJoinBtn').addEventListener('click', function() {
             window.location.href = '/home/authentication/login.html';
+        });
+        
+        // New logic to handle "Learn More" button
+        document.getElementById('learnMoreBtn').addEventListener('click', function() {
+            window.location.href = '/levels.html';
         });
     </script>
 </body>
